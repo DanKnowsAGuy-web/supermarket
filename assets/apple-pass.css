@@ -1,0 +1,42 @@
+/* Energy Plus · apple-pass (marriage preview)
+   A refinement layer, loaded AFTER styles.css + atmosphere.css. It touches
+   only the type scale, tracking, spacing rhythm, and CTA weight, to bring the
+   65+ readable, Apple-confident feel onto the real page. No structure, no copy,
+   no colour system changes. Everything narrative and proof stays exactly as is. */
+
+:root{
+  /* lift the whole modular scale ~12-18% for the 65+ / confident feel */
+  --step--1: clamp(0.92rem, 0.88rem + 0.18vw, 1.02rem);
+  --step-0:  clamp(1.15rem, 1.06rem + 0.4vw, 1.3rem);   /* body ~18.4-20.8px */
+  --step-1:  clamp(1.42rem, 1.28rem + 0.6vw, 1.72rem);
+  --step-2:  clamp(1.95rem, 1.62rem + 1.15vw, 2.65rem);
+  --step-3:  clamp(2.55rem, 2rem + 2.3vw, 3.6rem);
+  --step-4:  clamp(3.2rem, 2.35rem + 3.9vw, 5rem);
+  --step-5:  clamp(3.7rem, 2.5rem + 5.6vw, 6.2rem);      /* hero, confident */
+  --monument: clamp(4.8rem, 2.7rem + 9.5vw, 10.5rem);
+  /* darken muted one notch for older eyes on light grounds */
+  --muted: oklch(0.46 0.012 240);
+}
+
+/* tighter, more deliberate display tracking */
+h1, h2 { letter-spacing: -0.032em; }
+.monument, .bill__total-amt, .result .fig, .cred-tiles .big { letter-spacing: -0.04em; }
+
+/* a touch more line comfort on big headings */
+.hero h1 { line-height: 1.02; }
+.sect h2, .cinema h2 { line-height: 1.06; }
+
+/* ledes breathe a little more */
+.lede { line-height: 1.5; max-width: 34ch; }
+
+/* CTA: larger, friendlier target for 65+ */
+.pill { font-size: var(--step-0); padding: 0.95em 1.7em; }
+.pill--lg { font-size: calc(var(--step-0) + 1px); }
+.ghostlink { font-size: var(--step-0); }
+
+/* a bit more air between chapters so each idea lands on its own */
+:root { --space-chapter: clamp(6.5rem, 5rem + 7vw, 12rem); }
+
+/* nudge nav + footnote text up so they aren't tiny for older eyes */
+.site-nav a:not(.pill) { font-size: 1.02rem; }
+sup.fn { font-size: 0.62em; }

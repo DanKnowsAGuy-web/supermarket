@@ -1,0 +1,95 @@
+/* Energy Plus · pinned bill chapter (marriage preview)
+   Scoped entirely under #money. Upgrades the existing "deconstruct the bill"
+   chapter into a pinned, scroll-scrubbed sequence on a verdigris-deep ground,
+   then returns to the light gallery for the coda. Nothing outside #money is
+   touched. Reduced-motion + narrow screens fall back to a static stack. */
+
+@keyframes drift-a{ from{ transform:translateX(0) } to{ transform:translateX(-190px) } }
+@keyframes drift-b{ from{ transform:translateX(-190px) } to{ transform:translateX(0) } }
+
+#money.money-spine{ position:relative; padding:0; }
+#money .ms-stage{ position:relative; height:520vh; }
+#money .ms-pin{ position:sticky; top:0; height:100svh; overflow:hidden; display:grid; place-items:center;
+  background:radial-gradient(120% 104% at 50% 10%, #123430 0%, #0f2723 58%, #0a1917 100%); }
+#money .ms-field{ position:absolute; inset:0; z-index:0; pointer-events:none; opacity:.85; }
+#money .ms-field svg{ width:100%; height:100%; display:block; }
+#money .ms-field .w{ fill:none; stroke-width:1.1; }
+#money .ms-field .w.verd{ stroke:#5fc7b7; opacity:.13; }
+#money .ms-field .w.heat{ stroke:#e0864e; opacity:.1; }
+#money .ms-glow{ position:absolute; left:50%; top:-24%; width:120%; height:74%; transform:translateX(-50%); z-index:0; pointer-events:none;
+  background:radial-gradient(closest-side, rgba(72,184,168,.16), transparent 70%); }
+#money .ms-vig{ position:absolute; inset:0; z-index:1; pointer-events:none; box-shadow:inset 0 0 160px 40px rgba(4,10,9,.5); }
+#money .ms-grid{ position:relative; z-index:3; width:100%; max-width:1180px; display:grid; grid-template-columns:1fr 1fr;
+  gap:clamp(24px,5vw,76px); align-items:center; padding-inline:clamp(24px,6vw,80px); }
+
+#money .ms-beats{ position:relative; min-height:400px; }
+#money .ms-beat{ position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center;
+  opacity:0; transform:translateY(14px); transition:opacity .5s var(--ease-out), transform .5s var(--ease-out); pointer-events:none; }
+#money .ms-beat.on{ opacity:1; transform:none; }
+#money .ms-beat .tag{ font-size:1.02rem; font-weight:500; color:var(--cinema-body); margin-bottom:1rem; }
+#money .ms-beat h2{ font-size:var(--step-3); color:var(--cinema-ink); max-width:17ch; margin:0; line-height:1.06; }
+#money .ms-beat .sub{ font-size:var(--step-1); color:var(--cinema-body); margin-top:1.1rem; max-width:34ch; line-height:1.45; }
+#money .ms-beat .bfig{ font-weight:300; letter-spacing:-.045em; line-height:.9; font-size:var(--monument); display:block; margin-bottom:.2rem; }
+#money .ms-beat .bfig.heat{ color:#eaa877; }
+#money .ms-beat .bfig.verd{ color:#5fc7b7; }
+#money .ms-beat .subnum{ font-size:1.02rem; color:var(--cinema-body); opacity:.85; margin-bottom:1.1rem; }
+
+#money .ms-bill{ background:#f8f6f0; color:#1e2127; border-radius:16px; padding:clamp(24px,2.6vw,34px);
+  box-shadow:0 50px 100px -34px rgba(0,0,0,.75), 0 2px 0 rgba(255,255,255,.5) inset; max-width:520px; width:100%; justify-self:center; }
+#money .msb-head{ display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid #ddd9cf; padding-bottom:16px; }
+#money .msb-co{ font-weight:600; font-size:1.15rem; letter-spacing:-.02em; }
+#money .msb-co small{ display:block; font-weight:400; font-size:.8rem; color:#5c6167; margin-top:4px; }
+#money .msb-meta{ font-size:.78rem; color:#5c6167; text-align:right; line-height:1.7; font-variant-numeric:tabular-nums; }
+#money .msb-lines{ list-style:none; margin:0; padding:0; }
+#money .msb-line{ display:flex; justify-content:space-between; align-items:baseline; gap:16px; padding:15px 12px; margin:0 -12px; border-radius:10px;
+  transition:background .5s var(--ease-out); position:relative; }
+#money .msb-line .lbl{ font-size:1.05rem; color:#1e2127; }
+#money .msb-line .lsub{ display:block; font-size:.78rem; color:#5c6167; margin-top:3px; font-variant-numeric:tabular-nums; }
+#money .msb-line .amt{ font-size:1.05rem; font-weight:500; font-variant-numeric:tabular-nums; white-space:nowrap; text-align:right; }
+#money .msb-line .cut{ display:block; font-size:.8rem; font-weight:500; color:#2f8079; margin-top:4px; opacity:0; transition:opacity .4s var(--ease-out); }
+#money .msb-line.flag{ background:rgba(224,134,78,.14); }
+#money .msb-line.flag .lbl, #money .msb-line.flag .amt{ color:#9c4a12; }
+#money .msb-line.cutx{ background:rgba(47,128,121,.12); }
+#money .msb-line.cutx .amt.orig{ color:#5c6167; text-decoration:line-through; }
+#money .msb-line.cutx .cut{ opacity:1; }
+#money .msb-total{ display:flex; justify-content:space-between; align-items:baseline; border-top:2px solid #1e2127; margin-top:8px; padding-top:16px; }
+#money .msb-total .lbl{ font-weight:600; font-size:1.05rem; }
+#money .msb-total .amt{ font-size:1.6rem; font-weight:600; font-variant-numeric:tabular-nums; letter-spacing:-.02em; transition:color .5s var(--ease-out); }
+#money .ms-bill.after .msb-total .amt{ color:#2f8079; }
+#money .msb-usage{ margin-top:20px; padding-top:16px; border-top:1px solid #ddd9cf; opacity:.4; transition:opacity .5s var(--ease-out); }
+#money .ms-bill.lit .msb-usage{ opacity:1; }
+#money .msb-ucap{ display:flex; justify-content:space-between; font-size:.82rem; font-weight:500; color:#5c6167; margin-bottom:9px; }
+#money .msb-ucap b{ color:#1e2127; font-variant-numeric:tabular-nums; }
+#money .msb-bar{ display:flex; height:42px; border-radius:9px; overflow:hidden; background:#ddd9cf; }
+#money .msb-seg{ display:flex; align-items:center; justify-content:center; font-size:.72rem; font-weight:600; color:#fff; white-space:nowrap; overflow:hidden;
+  transition:width .75s var(--ease-out), background .5s var(--ease-out); border-right:1.5px solid #f8f6f0; }
+#money .msb-seg:last-child{ border-right:0; }
+#money .msb-seg.hvac{ background:#d98a4e; width:50%; }
+#money .ms-bill.lit .msb-seg.hvac{ box-shadow:inset 0 0 0 2px rgba(255,255,255,.3); }
+#money .msb-seg.saved{ background:#2f8079; width:0; font-variant-numeric:tabular-nums; }
+#money .msb-seg.light{ background:#b0a893; width:22%; color:#403d36; }
+#money .msb-seg.plug{ background:#c7c2b4; width:15%; color:#403d36; }
+#money .msb-seg.other{ background:#dbd7cc; width:13%; color:#403d36; }
+#money .ms-bill.after .msb-seg.hvac{ width:35%; }
+#money .ms-bill.after .msb-seg.saved{ width:15%; }
+#money .msb-note{ font-size:.82rem; color:#5c6167; margin-top:10px; text-align:center; transition:color .4s var(--ease-out); }
+#money .ms-bill.after .msb-note{ color:#2f8079; font-weight:500; }
+
+/* coda: the cash-flow + finder's-fee content, back in the light gallery */
+#money .ms-coda{ padding-block:var(--space-6); }
+#money .ms-coda .prose{ max-width:var(--prose); }
+
+@media (max-width:860px){
+  #money .ms-stage{ height:auto; }
+  #money .ms-pin{ position:static; height:auto; padding-block:14vh; }
+  #money .ms-grid{ grid-template-columns:1fr; gap:2rem; }
+  #money .ms-beats{ position:static; min-height:0; }
+  #money .ms-beat{ position:static; opacity:0; height:0; overflow:hidden; transition:none; }
+  #money .ms-beat.on{ opacity:1; height:auto; }
+  #money .ms-bill{ max-width:460px; order:-1; justify-self:stretch; }
+}
+@media (prefers-reduced-motion:reduce){
+  #money .ms-stage{ height:auto; }
+  #money .ms-pin{ position:static; height:auto; padding-block:14vh; }
+  #money .ms-beat{ position:static; opacity:1; height:auto; overflow:visible; margin-bottom:9vh; }
+}

@@ -1,0 +1,18 @@
+/* Field Report type system: one load-bearing family + one instrument voice.
+   Archivo variable carries body (normal width) and display (expanded, heavy);
+   Spline Sans Mono is reserved for metered values, captions, and footnotes. */
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url("archivo-var.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Spline Sans Mono";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("spline-sans-mono-var.woff2") format("woff2");
+}

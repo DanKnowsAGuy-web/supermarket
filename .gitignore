@@ -1,0 +1,7 @@
+# Internal working documents — never publish to the public Pages repo
+*.md
+.claude/
+lab/
+index.apple-preview.html
+index.marriage-preview.html
+index.premium-preview.html

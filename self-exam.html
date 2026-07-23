@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 20-Minute Building Self-Exam | Energy Plus</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="assets/fonts/report-fonts.css">
+<style>
+  :root {
+    --paper: oklch(0.985 0 0);
+    --rule: oklch(0.8 0 0);
+    --ink: oklch(0.17 0.005 270);
+    --body-c: oklch(0.3 0.005 270);
+    --faint: oklch(0.44 0.005 270);
+    --amber-ink: oklch(0.5 0.11 70);
+    --amber-wash: oklch(0.965 0.025 85);
+    --sans: "Archivo", system-ui, sans-serif;
+    --mono: "Spline Sans Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  @page { size: letter; margin: 0; }
+  html, body { background: var(--paper); }
+  body { font-family: var(--sans); font-size: 9.6pt; line-height: 1.5; color: var(--body-c); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 8.5in; height: 11in; margin: 0 auto; padding: 0.5in 0.6in 0.42in; page-break-after: always; position: relative; }
+  .page:last-child { page-break-after: auto; }
+  header { display: flex; justify-content: space-between; align-items: center; }
+  header img { width: 88px; filter: invert(1) hue-rotate(180deg); }
+  .doc-id { font-family: var(--mono); font-size: 7pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); }
+  h1 { margin-top: 0.22in; font-weight: 840; font-stretch: 122%; font-size: 24pt; line-height: 0.98; letter-spacing: -0.015em; color: var(--ink); }
+  .promise { margin-top: 7pt; font-size: 10.5pt; line-height: 1.5; max-width: 6.9in; }
+  .promise strong { color: var(--ink); font-weight: 620; }
+  .bar { border: 0; border-top: 2px solid var(--ink); margin: 0.16in 0; }
+  h2 { font-family: var(--mono); font-weight: 600; font-size: 8pt; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); border-bottom: 1px solid var(--rule); padding-bottom: 4pt; margin-bottom: 8pt; }
+  h2 .time { float: right; color: var(--amber-ink); }
+  section + section { margin-top: 0.16in; }
+  .item { display: grid; grid-template-columns: 14pt 1fr; gap: 7pt; padding: 5.5pt 0; border-bottom: 0.75pt solid var(--rule); align-items: start; }
+  .box { width: 10.5pt; height: 10.5pt; border: 1.5pt solid var(--ink); border-radius: 2pt; margin-top: 1.5pt; }
+  .item b { color: var(--ink); font-weight: 620; }
+  .item .why { display: block; font-size: 8.4pt; color: var(--faint); margin-top: 1.5pt; }
+  .write { font-family: var(--mono); font-size: 8.5pt; color: var(--faint); white-space: nowrap; }
+  .write i { display: inline-block; min-width: 0.9in; border-bottom: 0.75pt solid var(--ink); height: 10pt; font-style: normal; }
+  .flag { color: var(--amber-ink); font-weight: 600; }
+  .note { margin-top: 8pt; font-size: 8.4pt; color: var(--faint); }
+  .verdict { margin-top: 0.14in; border: 1.5pt solid var(--amber-ink); outline: 0.75pt solid var(--amber-ink); outline-offset: 2.5pt; background: var(--amber-wash); padding: 9pt 11pt; }
+  .verdict h3 { font-family: var(--mono); font-weight: 600; font-size: 7pt; letter-spacing: 0.14em; text-transform: uppercase; color: var(--amber-ink); }
+  .verdict p { margin-top: 3pt; color: var(--ink); font-size: 9.8pt; line-height: 1.45; }
+  .verdict b { font-weight: 680; }
+  footer { position: absolute; left: 0.6in; right: 0.6in; bottom: 0.4in; border-top: 2px solid var(--ink); padding-top: 8pt; display: grid; grid-template-columns: 1fr auto; gap: 0.3in; align-items: start; }
+  .contact { font-size: 9pt; }
+  .contact b { color: var(--ink); font-weight: 680; }
+  .contact .mono { font-family: var(--mono); font-size: 8pt; color: var(--body-c); }
+  .legal { margin-top: 4pt; font-size: 6.6pt; line-height: 1.4; color: var(--faint); max-width: 5.6in; }
+  .qr { text-align: center; }
+  .qr img { width: 0.85in; height: 0.85in; }
+  .qr p { font-family: var(--mono); font-size: 6.5pt; letter-spacing: 0.06em; color: var(--body-c); margin-top: 1pt; }
+  .pageno { font-family: var(--mono); font-size: 7pt; color: var(--faint); }
+  .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.3in; }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <header>
+    <img src="assets/img/energy-plus-logo.png" alt="Energy Plus">
+    <p class="doc-id">The self-exam &middot; worksheet &middot; page 1 of 2</p>
+  </header>
+
+  <h1>Find your building's waste in 20 minutes.</h1>
+  <p class="promise">You don't need a vendor to start. You need one recent electric bill, your phone, and a walk to the roof. <strong>This worksheet works whether or not you ever call us:</strong> by the end you'll know where your money is leaking, and you'll be immune to the next savings pitch that can't answer these questions.</p>
+
+  <hr class="bar">
+
+  <section>
+    <h2>Part 1 &middot; The bill teardown <span class="time">~8 minutes, at your desk</span></h2>
+
+    <div class="item"><span class="box"></span><div>
+      <b>Find your demand charge.</b> Look for "demand," "kW," or "peak kW" on the bill. <span class="write">Amount: $<i></i> &nbsp;&middot;&nbsp; % of total bill: <i></i></span>
+      <span class="why">Your single highest 15-minute spike sets this price for the whole month, no matter how low you run the rest of the time. <span class="flag">Over 25% of the bill = your biggest lever is the spike, not the usage.</span></span>
+    </div></div>
+
+    <div class="item"><span class="box"></span><div>
+      <b>Look for a power factor or reactive charge.</b> Words like "PF adjustment," "kVAR," or "reactive demand." <span class="write">Present? Y / N &nbsp;&middot;&nbsp; $<i></i></span>
+      <span class="why">A penalty for how your equipment draws power. <span class="flag">If it's on the bill, it's usually one of the cheapest things to make disappear.</span></span>
+    </div></div>
+
+    <div class="item"><span class="box"></span><div>
+      <b>Estimate your cooling share.</b> Pull your highest summer bill and your lowest winter bill. <span class="write">July $<i></i> &minus; Jan $<i></i> = $<i></i></span>
+      <span class="why">The difference is roughly what temperature costs you. In most commercial buildings, heating and cooling runs 40 to 50% of the total.&sup1; <span class="flag">The bigger this number, the bigger your fastest fix.</span></span>
+    </div></div>
+
+    <div class="item"><span class="box"></span><div>
+      <b>Find your rate schedule name.</b> Usually near the account number ("Schedule GS-2," "TOU-8," etc.). <span class="write">Schedule: <i></i></span>
+      <span class="why">This one word determines which utility rebate programs your building can tap. Many cover 50 to 75% of efficiency projects, and most buildings never claim them.&sup2;</span>
+    </div></div>
+
+    <div class="item"><span class="box"></span><div>
+      <b>Check the trend.</b> Same month, last year vs this year. <span class="write">Change: <i></i>%</span>
+      <span class="why"><span class="flag">A bill creeping up with no change in operations is the classic signature of equipment quietly losing efficiency.</span></span>
+    </div></div>
+
+    <p class="note">Can't find one of these lines? That's normal; commercial bills are built to be skimmed past. Text a photo of the bill to the number below and we'll mark it up for you, no meeting required.</p>
+  </section>
+</div>
+
+<div class="page">
+  <header>
+    <img src="assets/img/energy-plus-logo.png" alt="Energy Plus">
+    <p class="doc-id">The self-exam &middot; worksheet &middot; page 2 of 2</p>
+  </header>
+
+  <section style="margin-top: 0.22in">
+    <h2>Part 2 &middot; The roof walk <span class="time">~12 minutes, with your phone</span></h2>
+
+    <div class="item"><span class="box"></span><div>
+      <b>Count your rooftop units.</b> <span class="write">Count: <i></i></span>
+      <span class="why">Each one is its own patient. A 6-unit building and a 40-unit building differ in scale, not method.</span>
+    </div></div>
+
+    <div class="item"><span class="box"></span><div>
+      <b>Photograph the nameplate on each unit.</b> The metal data plate on the side: get the model number, tonnage, and manufacture date in one photo.
+      <span class="why">This is the single most valuable thing you can walk away with. Age, size, and type determine what any honest fix is worth. <span class="flag">Units 8+ years old are usually carrying the most recoverable waste.&sup1;</span></span>
+    </div></div>
+
+    <div class="item"><span class="box"></span><div>
+      <b>The listen test.</b> Stand by a running unit for five minutes. Does the compressor (the loud hum) ever stop, or does it run the whole time? <span class="write">Runs nonstop: Y / N</span>
+      <span class="why">Once coils are saturated, the air can't get colder, yet the compressor keeps running. That's paid-for electricity doing nothing. <span class="flag">A compressor that never rests is the sound of the waste itself.</span></span>
+    </div></div>
+
+    <div class="item"><span class="box"></span><div>
+      <b>Look at the coils.</b> The radiator-like fins. Dark staining, oil streaks, or a greasy film? <span class="write">Y / N</span>
+      <span class="why">Compressors slowly leak oil that bakes onto coils as an insulating film, growing for years with nobody to flag it. Old units can be down as much as a third of their original heat transfer.&sup1;</span>
+    </div></div>
+
+    <div class="item"><span class="box"></span><div>
+      <b>Ask the person who fixes them.</b> One question for your HVAC contractor: "Which units do you get called to most?" <span class="write">Problem units: <i></i></span>
+      <span class="why">Repeat-offender units are usually the ones running hardest against the most waste. (Whatever happens next, your contractor stays your contractor; we prefer working through them.)</span>
+    </div></div>
+  </section>
+
+  <section>
+    <h2>Part 3 &middot; Score it <span class="time">~30 seconds</span></h2>
+    <p style="font-size: 9pt">Count your marks: demand charge over 25% &middot; power factor penalty present &middot; big summer/winter gap &middot; bill creeping up &middot; units 8+ years old &middot; a compressor that never rests &middot; stained coils.</p>
+    <div class="verdict">
+      <h3>The reading</h3>
+      <p><b>0&ndash;1 marks:</b> your building is running tight; keep this sheet for next year. <b>2 marks:</b> worth a look. <b>3 or more:</b> your building is very likely a candidate for a no-cost diagnosis, and you have a head start: <b>add your last 12 months of full bills, every page, not the summary, to the photos in your hand, and that is the entire ask.</b> The detail pages carry the demand charges and 15-minute usage a real quote is built from. Send them and The Exam starts; nothing is installed unless the savings are proven first, or you owe nothing.&sup2; Shortcut: most utility portals export all 12 months in one download, or authorize us to pull your usage data directly.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="contact">
+      <b>Send what you found, or ask a question.</b><br>
+      <span class="mono">dan@yourenergyplus.com &middot; (864) 777-0688 &middot; bit.ly/4gKVmnM</span>
+      <p class="legal">1. Typical shares, ranges, and equipment behaviors are representative figures from public sources and site studies, not a prediction for your building. 2. "No cost," diagnosis, and guarantee statements describe the diagnosis and pilot phase for qualifying properties and are governed by written agreement. Full numbered disclosures at the link. This worksheet is general information, not engineering advice; stay safe on the roof. &copy; 2026 Energy Plus, Independent Energy Solutions Partner.</p>
+    </div>
+    <div class="qr">
+      <img src="assets/img/qr-fit-call.svg" alt="QR code linking to the Energy Plus site">
+      <p>THE FULL REPORT</p>
+    </div>
+  </footer>
+</div>
+
+</body>
+</html>

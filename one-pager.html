@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Energy Plus: the one-page field report</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="assets/fonts/report-fonts.css">
+<style>
+  :root {
+    --paper: oklch(0.985 0 0);
+    --rule: oklch(0.8 0 0);
+    --ink: oklch(0.17 0.005 270);
+    --body-c: oklch(0.3 0.005 270);
+    --faint: oklch(0.44 0.005 270);
+    --amber-ink: oklch(0.5 0.11 70);
+    --amber-wash: oklch(0.965 0.025 85);
+    --sans: "Archivo", system-ui, sans-serif;
+    --mono: "Spline Sans Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  @page { size: letter; margin: 0; }
+  html, body { background: var(--paper); }
+  body {
+    width: 8.5in; min-height: 11in; margin: 0 auto; padding: 0.55in 0.6in 0.45in;
+    font-family: var(--sans); font-size: 9.8pt; line-height: 1.5; color: var(--body-c);
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  header { display: flex; justify-content: space-between; align-items: center; }
+  header img { width: 92px; filter: invert(1) hue-rotate(180deg); }
+  .doc-id { font-family: var(--mono); font-size: 7pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); }
+  h1 { margin-top: 0.28in; font-weight: 840; font-stretch: 122%; font-size: 27pt; line-height: 0.98; letter-spacing: -0.015em; color: var(--ink); }
+  .promise { margin-top: 8pt; font-size: 11.5pt; line-height: 1.45; color: var(--body-c); max-width: 6.6in; }
+  .promise strong { color: var(--ink); font-weight: 620; }
+  .bar { border: 0; border-top: 2px solid var(--ink); margin: 0.18in 0; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0.35in; }
+  h2 { font-family: var(--mono); font-weight: 600; font-size: 7.5pt; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); border-bottom: 1px solid var(--rule); padding-bottom: 4pt; margin-bottom: 7pt; }
+  section + section { margin-top: 0.17in; }
+  .steps { list-style: none; padding: 0; counter-reset: s; }
+  .steps li { counter-increment: s; position: relative; padding: 4.5pt 0 4.5pt 22pt; }
+  .steps li::before { content: "0" counter(s); position: absolute; left: 0; top: 5pt; font-family: var(--mono); font-weight: 600; font-size: 9.5pt; color: var(--ink); }
+  .steps b { color: var(--ink); font-weight: 620; }
+  .floor { margin-top: 8pt; border: 1.5pt solid var(--amber-ink); outline: 0.75pt solid var(--amber-ink); outline-offset: 2.5pt; background: var(--amber-wash); padding: 8pt 10pt; }
+  .floor h3 { font-family: var(--mono); font-weight: 600; font-size: 7pt; letter-spacing: 0.14em; text-transform: uppercase; color: var(--amber-ink); }
+  .floor p { margin-top: 3pt; color: var(--ink); font-weight: 560; font-size: 9.6pt; line-height: 1.4; }
+  .readout { font-family: var(--mono); font-weight: 560; font-size: 34pt; line-height: 1; color: var(--amber-ink); letter-spacing: -0.02em; }
+  .readout-cap { margin-top: 4pt; font-size: 9pt; color: var(--body-c); }
+  .readout-cap b { color: var(--ink); }
+  .rec { list-style: none; padding: 0; }
+  .rec li { display: grid; grid-template-columns: 0.75in 1fr; gap: 8pt; padding: 4pt 0; border-bottom: 0.75pt solid var(--rule); align-items: baseline; }
+  .rec li:first-child { border-top: 0.75pt solid var(--rule); }
+  .rec .f { font-family: var(--mono); font-weight: 600; font-size: 10.5pt; color: var(--amber-ink); }
+  .rec .w b { display: block; color: var(--ink); font-weight: 620; font-size: 9pt; }
+  .rec .w span { font-size: 8pt; color: var(--faint); }
+  .roles p { padding: 3.5pt 0; border-bottom: 0.75pt solid var(--rule); font-size: 9pt; }
+  .roles p:first-of-type { border-top: 0.75pt solid var(--rule); }
+  .roles b { color: var(--ink); font-weight: 620; }
+  footer { margin-top: 0.2in; border-top: 2px solid var(--ink); padding-top: 10pt; display: grid; grid-template-columns: 1fr auto; gap: 0.3in; align-items: start; }
+  .contact { font-size: 9.5pt; }
+  .contact b { color: var(--ink); font-weight: 680; font-stretch: 110%; }
+  .contact .mono { font-family: var(--mono); font-size: 8.5pt; color: var(--body-c); }
+  .legal { margin-top: 6pt; font-size: 6.8pt; line-height: 1.45; color: var(--faint); max-width: 5.4in; }
+  .qr { text-align: center; }
+  .qr img { width: 0.95in; height: 0.95in; }
+  .qr p { font-family: var(--mono); font-size: 7pt; letter-spacing: 0.06em; color: var(--body-c); margin-top: 2pt; }
+</style>
+</head>
+<body>
+  <header>
+    <img src="assets/img/energy-plus-logo.png" alt="Energy Plus">
+    <p class="doc-id">Field report &middot; One page &middot; For the whole decision chain</p>
+  </header>
+
+  <h1>Stop paying for wasted energy.</h1>
+  <p class="promise">We find the waste in your commercial building, prove the savings on your own equipment, and install nothing until the number is real. <strong>The EPA puts average commercial waste near 30% of the energy purchased.&sup1;</strong> Heating and cooling is usually the biggest lever, so that is where we start.</p>
+
+  <hr class="bar">
+
+  <div class="cols">
+    <div>
+      <section>
+        <h2>The plan &middot; the first two steps are The Exam</h2>
+        <ol class="steps">
+          <li><b>Send a year of bills and a few photos.</b> Your last 12 months of full bills, every page, not the summary: the detail pages carry the demand charges and 15-minute usage a real quote is built from. Plus phone photos of each HVAC nameplate. One email, no site visit. Shortcut: a 12-month export from your utility portal, or authorize us to pull the data directly.&sup2;</li>
+          <li><b>We prove your number on your own building.</b> Seven days of metering before the work, seven after, witnessed by anyone you choose. IPMVP Option C and ASHRAE Guideline 14 available on request.&sup3;</li>
+          <li><b>You decide.</b> Keep what pays for itself, or walk away owing nothing.&sup2;</li>
+        </ol>
+        <div class="floor">
+          <h3>The Floor</h3>
+          <p>If we can't prove the savings, nothing is installed and you owe nothing.&sup2;</p>
+        </div>
+      </section>
+      <section>
+        <h2>Whoever you are in the building</h2>
+        <div class="roles">
+          <p><b>Run the building:</b> installed on units you already own, typically an afternoon each; your incumbent HVAC contractor stays your contractor.</p>
+          <p><b>Own the P&amp;L:</b> every fix must clear a roughly two-year payback bar, or run cash-flow positive from day one, on your numbers.&sup1;&nbsp;&sup2;</p>
+          <p><b>Answer for ESG or risk:</b> witnessed per-unit metering and verified kWh you can carry into emissions reporting.&sup3;</p>
+        </div>
+      </section>
+    </div>
+    <div>
+      <section>
+        <h2>The number &middot; quoted from the floor</h2>
+        <p class="readout">20&ndash;55%</p>
+        <p class="readout-cap"><b>off the HVAC portion of your bill.&sup1;</b> An optimizer that stops the compressor when it stops doing useful work, and a one-time coil treatment that brings back what age took. Deeper phases follow only after your own data proves phase one.</p>
+      </section>
+      <section>
+        <h2>Measured at 200+ named sites&sup1;&nbsp;&#8308;</h2>
+        <ul class="rec">
+          <li><span class="f">23.6%</span><span class="w"><b>NASA Jet Propulsion Lab</b><span>7-day before/after metering, Caltech / Emcor</span></span></li>
+          <li><span class="f">27.75%</span><span class="w"><b>City of Windsor, Ontario</b><span>Utility-verified average across sites</span></span></li>
+          <li><span class="f">21.1%</span><span class="w"><b>Simon Property Group</b><span>IPMVP-verified kWh, 12-month payback</span></span></li>
+          <li><span class="f">19.2%</span><span class="w"><b>Anheuser-Busch (Mitchell Dist.)</b><span>RTU study, 20-month payback</span></span></li>
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <footer>
+    <div class="contact">
+      <b>The next step is 15 minutes.</b> Book the fit call or text Dan directly.<br>
+      <span class="mono">dan@yourenergyplus.com &middot; (864) 777-0688 &middot; bit.ly/4gKVmnM</span>
+      <p class="legal">1. Savings and performance figures shown, including 20&ndash;55% of the HVAC portion of a bill, are illustrative estimates or results measured at the named facilities under their own conditions, not predictions or guarantees of your results. 2. Program terms, "no cost," and guarantee statements describe the diagnosis and pilot phase for qualifying properties and are governed by written agreement. 3. Independent measurement and verification available on qualifying projects. 4. Named organizations refer to evaluations of the underlying technologies we deploy, not to Energy Plus, and imply no endorsement. Full numbered disclosures: the link at right. &copy; 2026 Energy Plus, Independent Energy Solutions Partner.</p>
+    </div>
+    <div class="qr">
+      <img src="assets/img/qr-fit-call.svg" alt="QR code linking to the Energy Plus site">
+      <p>SCAN FOR THE FULL REPORT</p>
+    </div>
+  </footer>
+</body>
+</html>
