@@ -31,6 +31,15 @@
   --amber-ink: oklch(0.5 0.11 70);
   --amber-wash: oklch(0.965 0.025 85);
 
+  /* the second signal, held to the same discipline as amber: THE COLD THAT
+     MUST HOLD — case temperature, the load that never clocks out. Appears only
+     where the subject is the cold itself (the always beat, the case in the
+     dew-point figure, the two-degree drift in the stakes). Anywhere else it is
+     a defect, exactly like amber. */
+  --cold: oklch(0.83 0.1 233);        /* on graphite: frost signal */
+  --cold-ink: oklch(0.52 0.1 240);    /* on paper: AA case-temperature accent */
+  --cold-wash: oklch(0.965 0.022 235);
+
   --font-sans: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "Spline Sans Mono", ui-monospace, "Cascadia Mono", monospace;
 
@@ -289,6 +298,27 @@ sup.fn a { color: inherit; text-decoration: none; }
   color: var(--panel-body); max-width: 40ch; line-height: 1.5;
 }
 .readout small strong { color: var(--panel-ink); }
+
+/* the signature beat: the one load that never clocks out.
+   Same graphite instrument surface as the money readout, but the figure is
+   time, not money, so it wears the cold signal instead of amber. */
+.always__lede-num { max-width: 44ch; }
+.readout--cold { color: var(--cold); text-shadow: 0 0 34px oklch(0.83 0.1 233 / 0.32); }
+.readout--cold small { max-width: 42ch; }
+.always__note { margin-top: clamp(1.6rem, 3.5vw, 2.4rem); font-size: var(--step--1); color: var(--panel-body); max-width: 58ch; }
+.always__note strong { color: var(--panel-ink); }
+/* the night band the cold keeps running through */
+.fig .nightband { fill: var(--cold); }
+.fig .trace-off { stroke: var(--panel-body); }
+.beat--dark .fig .trace-off { stroke: oklch(0.6 0.006 260); }
+
+/* a survey plate that stays inside the night, not a white lightbox on graphite */
+.plate--dark .plate__frame { background: oklch(0.2 0.008 260); border-color: var(--graphite-rule); }
+.plate--dark .plate img { filter: grayscale(1) contrast(1.05) brightness(0.9); }
+.plate--dark figcaption { color: oklch(0.62 0.006 260); }
+
+/* the case temperature that must hold: the one on-paper cold accent */
+.drift { color: var(--cold-ink); font-weight: 560; white-space: nowrap; }
 
 /* proof: the measured ledger; verified figures wear the signal */
 .record { list-style: none; margin: clamp(1.8rem, 4vw, 2.6rem) 0 0; padding: 0; }
@@ -575,6 +605,7 @@ dialog::backdrop { background: oklch(0.12 0.006 260 / 0.8); }
 .fig .d { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 .fig .soft { stroke-width: 1; opacity: 0.5; }
 .fig .amber { stroke: var(--amber-ink); stroke-width: 2.5; opacity: 1; }
+.fig .cold { stroke: var(--cold-ink); stroke-width: 2.5; opacity: 1; }
 .fig .dash { fill: none; stroke: currentColor; stroke-width: 1; stroke-dasharray: 4 5; opacity: 0.55; }
 .fig text { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.04em; fill: var(--faint); }
 .fig .lbl--ink { fill: var(--ink); font-weight: 600; }
@@ -583,6 +614,7 @@ dialog::backdrop { background: oklch(0.12 0.006 260 / 0.8); }
 .beat--dark .fig text { fill: var(--panel-body); }
 .beat--dark .fig .lbl--ink { fill: var(--panel-ink); }
 .beat--dark .fig .amber { stroke: var(--amber); }
+.beat--dark .fig .cold { stroke: var(--cold); filter: drop-shadow(0 0 5px oklch(0.83 0.1 233 / 0.45)); }
 .fig figcaption { margin-top: 0.7rem; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
 .beat--dark .fig figcaption { color: oklch(0.62 0.006 260); }
 

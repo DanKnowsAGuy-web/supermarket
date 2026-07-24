@@ -164,7 +164,7 @@
           <text class="lbl" x="30" y="184">brings moisture in</text>
           <path class="dash" d="M26 224 C 96 226, 132 210, 196 200 C 250 192, 278 190, 316 188"/>
           <!-- the case that pays for it -->
-          <rect class="d" pathLength="1" style="--d:3" x="316" y="132" width="104" height="120" rx="2"/>
+          <rect class="d cold" pathLength="1" style="--d:3" x="316" y="132" width="104" height="120" rx="2"/>
           <path class="d soft" pathLength="1" style="--d:4" d="M316 172 H420 M316 212 H420"/>
           <path class="fade" style="--o:0.5" d="M326 142 v9 M338 145 v7 M350 141 v10 M362 145 v7 M374 142 v9 M386 145 v7 M398 141 v10 M410 144 v8" stroke="currentColor" stroke-width="1.4"/>
           <text class="lbl" x="368" y="122" text-anchor="middle">the case sweats</text>
@@ -212,6 +212,38 @@
         </div>
       </div>
       <p class="quiet">Simulated audio, tuned to the pattern, not a recording. The real test costs five minutes standing next to your own rack &mdash; it's on page 2 of the worksheet, further down this page.</p>
+    </div>
+  </section>
+
+  <!-- BEAT 1.75 · NEVER CLOCKS OUT · the fork's signature, on graphite -->
+  <section class="beat beat--dark always" id="always" aria-labelledby="always-h">
+    <div class="wrap beat__narrow">
+      <h2 id="always-h">The cold never clocks out.</h2>
+      <p class="lead lead--dark always__lede-num">At close, the lights dim, the registers go quiet, and the rooftops set back for the night. <strong>The refrigeration doesn't.</strong> It holds your product through every dark hour, which is why it's the one load that runs the entire year &mdash; and the one place waste compounds around the clock.<sup class="fn"><a href="#notes" aria-label="See note 12">12</a></sup></p>
+      <p class="readout readout--cold">8,760<small><strong>hours a year the compressors never stop.</strong> A rooftop rests half the day; a refrigeration circuit never gets to.</small></p>
+      <figure class="fig" aria-label="Diagram: over one day, the store's other loads fall away overnight while the refrigeration line stays high the entire time, including through the closed hours">
+        <svg viewBox="0 0 640 300" role="img" aria-hidden="true">
+          <rect class="nightband fade" style="--o:0.07" x="300" y="44" width="170" height="192"/>
+          <line class="dash" x1="300" y1="52" x2="300" y2="236"/>
+          <line class="dash" x1="470" y1="52" x2="470" y2="236"/>
+          <!-- everything else: high while the store is open, winds down overnight -->
+          <path class="d trace-off" pathLength="1" style="--d:1" d="M40 100 L84 94 L128 102 L172 96 L216 104 L260 98 L300 100 L322 140 L344 186 L366 212 L404 216 L440 214 L470 210 L492 150 L514 110 L540 100 L572 104 L604 100"/>
+          <!-- the cold: hums and rests in tiny cycles but never drops, all night through -->
+          <path class="d cold" pathLength="1" style="--d:0" d="M40 76 L92 72 L120 80 L172 74 L200 80 L252 73 L280 79 L332 75 L360 80 L412 74 L440 79 L492 74 L520 80 L572 74 L604 77"/>
+          <line class="d soft" pathLength="1" style="--d:2" x1="40" y1="236" x2="604" y2="236"/>
+          <text class="lbl lbl--ink" x="604" y="64" text-anchor="end">the cold &middot; never drops</text>
+          <text class="lbl" x="385" y="198" text-anchor="middle">everything else winds down</text>
+          <text class="lbl" x="300" y="256" text-anchor="middle">store closes</text>
+          <text class="lbl" x="470" y="256" text-anchor="middle">store opens</text>
+          <text class="lbl soft-t" x="322" y="288" text-anchor="middle">one store &middot; one day &middot; the cold is the only line that never rests</text>
+        </svg>
+        <figcaption>Fig. 03 &middot; The one load that runs every hour of the year</figcaption>
+      </figure>
+      <figure class="plate plate--dark">
+        <div class="plate__frame"><img src="assets/img/always-night.jpg" alt="Illustrative: a supermarket after closing, dark except for the glow of the refrigerated cases still running down the aisle" loading="lazy"></div>
+        <figcaption>Survey plate 1 &middot; A store after close, lit only by the cold still running &middot; illustrative<sup class="fn"><a href="#notes" aria-label="See note 1">1</a></sup></figcaption>
+      </figure>
+      <p class="always__note">This is why we start with the meter, not the roof: the fix that pays most in a store is usually the one attached to the load that never gets to rest.</p>
     </div>
   </section>
 
@@ -317,7 +349,7 @@
           <text class="lbl" x="571" y="230" text-anchor="middle">worst</text>
           <text class="lbl soft-t" x="318" y="256" text-anchor="middle">twelve stores &middot; one banner &middot; ranked by kWh per square foot</text>
         </svg>
-        <figcaption>Fig. 03 &middot; The ranking nobody runs &middot; illustrative<sup class="fn"><a href="#notes" aria-label="See note 1">1</a></sup></figcaption>
+        <figcaption>Fig. 04 &middot; The ranking nobody runs &middot; illustrative<sup class="fn"><a href="#notes" aria-label="See note 1">1</a></sup></figcaption>
       </figure>
     </div>
   </section>
@@ -359,7 +391,7 @@
           <text class="lbl" x="479" y="194" text-anchor="middle">7 days &middot; after</text>
           <text class="lbl soft-t" x="320" y="216" text-anchor="middle">per unit &middot; witnessed by anyone you choose</text>
         </svg>
-        <figcaption>Fig. 04 &middot; The Exam's proof window</figcaption>
+        <figcaption>Fig. 05 &middot; The Exam's proof window</figcaption>
       </figure>
       <div class="floor">
         <h3>The Floor</h3>
@@ -536,10 +568,10 @@
     <div class="wrap beat__narrow">
       <h2 id="stakes-h">Waiting isn't neutral, and warm is expensive twice.</h2>
       <p class="lead">The same waste that pads the bill runs through your compressors and wears them out years early. <strong>Replacing an aged-out rooftop fleet runs $260K to $480K per store.</strong><sup class="fn"><a href="#notes" aria-label="See note 1">1</a></sup></p>
-      <p class="lead">And a case that drifts two degrees is not a service call. It is shorter shelf life on everything in it, marked down or thrown out weeks later, showing up in shrink where nobody connects it back to a compressor.<sup class="fn"><a href="#notes" aria-label="See notes 1 and 12">1, 12</a></sup> <strong>None of it appears on any bill until the day it all does.</strong></p>
+      <p class="lead">And a case that drifts <span class="drift">two degrees</span> is not a service call. It is shorter shelf life on everything in it, marked down or thrown out weeks later, showing up in shrink where nobody connects it back to a compressor.<sup class="fn"><a href="#notes" aria-label="See notes 1 and 12">1, 12</a></sup> <strong>None of it appears on any bill until the day it all does.</strong></p>
       <figure class="plate">
-        <div class="plate__frame"><img src="assets/img/stakes-roof.jpg" alt="Illustrative: overhead survey view of an aging store roof, oil and rust streaks running from each of its package units" loading="lazy"></div>
-        <figcaption>Survey plate 1 &middot; An aging rooftop fleet, streaking oil &middot; The equipment doing the paying &middot; illustrative</figcaption>
+        <div class="plate__frame"><img src="assets/img/stakes-cases.jpg" alt="Illustrative: a long line of open refrigerated grocery display cases, the cold that turns into shrink the moment it drifts" loading="lazy"></div>
+        <figcaption>Survey plate 2 &middot; The cold that becomes shrink the day it drifts &middot; illustrative</figcaption>
       </figure>
     </div>
   </section>
@@ -555,7 +587,7 @@
   <!-- CLOSE -->
   <section class="close" aria-labelledby="close-h">
     <div class="close__media" aria-hidden="true">
-      <img src="assets/img/close-dusk.jpg" alt="" loading="lazy">
+      <img src="assets/img/close-store.jpg" alt="" loading="lazy">
       <div class="hero__scrim"></div>
     </div>
     <div class="wrap close__in">
