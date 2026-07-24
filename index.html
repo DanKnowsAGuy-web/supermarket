@@ -182,70 +182,6 @@
     </div>
   </section>
 
-  <!-- THE LISTEN TEST · the waste, out loud -->
-  <section class="beat beat--rule" id="listen" aria-labelledby="listen-h">
-    <div class="wrap beat__narrow">
-      <h2 id="listen-h">You can hear it in the back room.</h2>
-      <p class="lead">The compressors behind your cases are the loudest thing back there, and they eat most of what refrigeration costs you. A healthy one cycles: hum, rest, hum, rest. <strong>A saturated one hums straight through, buying electricity that makes nothing colder.</strong></p>
-      <div class="listen">
-        <div class="listen__card" data-card="healthy">
-          <button type="button" class="listen__btn" data-listen="healthy" aria-pressed="false" aria-label="Play the sound of a healthy unit">
-            <svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
-            <svg class="i-stop" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="1"/></svg>
-          </button>
-          <div class="listen__info">
-            <h3>A healthy compressor</h3>
-            <p>Hum, rest, hum. The rest is the sound of money staying yours.</p>
-          </div>
-          <div class="listen__meter" aria-hidden="true"></div>
-        </div>
-        <div class="listen__card" data-card="wasteful">
-          <button type="button" class="listen__btn" data-listen="wasteful" aria-pressed="false" aria-label="Play the sound of a unit that never rests">
-            <svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
-            <svg class="i-stop" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="1"/></svg>
-          </button>
-          <div class="listen__info">
-            <h3>A compressor paying for nothing</h3>
-            <p>The hum never stops. That's the waste, out loud.</p>
-          </div>
-          <div class="listen__meter" aria-hidden="true"></div>
-        </div>
-      </div>
-      <p class="quiet">Simulated audio, tuned to the pattern, not a recording. The real test costs five minutes standing next to your own rack &mdash; it's on page 2 of the worksheet, further down this page.</p>
-    </div>
-  </section>
-
-  <!-- BEAT 1.75 · NEVER CLOCKS OUT · the fork's signature, on graphite -->
-  <section class="beat beat--dark always" id="always" aria-labelledby="always-h">
-    <div class="wrap beat__narrow">
-      <h2 id="always-h">The cold never clocks out.</h2>
-      <p class="lead lead--dark always__lede-num">At close, the lights dim, the registers go quiet, and the rooftops set back for the night. <strong>The refrigeration doesn't.</strong> It holds your product through every dark hour, which is why it's the one load that runs the entire year &mdash; and the one place waste compounds around the clock.<sup class="fn"><a href="#notes" aria-label="See note 12">12</a></sup></p>
-      <p class="readout readout--cold">8,760<small><strong>hours a year the compressors never stop.</strong> A rooftop rests half the day; a refrigeration circuit never gets to.</small></p>
-      <figure class="fig" aria-label="Diagram: over one day, the store's other loads fall away overnight while the refrigeration line stays high the entire time, including through the closed hours">
-        <svg viewBox="0 0 640 300" role="img" aria-hidden="true">
-          <rect class="nightband fade" style="--o:0.07" x="300" y="44" width="170" height="192"/>
-          <line class="dash" x1="300" y1="52" x2="300" y2="236"/>
-          <line class="dash" x1="470" y1="52" x2="470" y2="236"/>
-          <!-- everything else: high while the store is open, winds down overnight -->
-          <path class="d trace-off" pathLength="1" style="--d:1" d="M40 100 L84 94 L128 102 L172 96 L216 104 L260 98 L300 100 L322 140 L344 186 L366 212 L404 216 L440 214 L470 210 L492 150 L514 110 L540 100 L572 104 L604 100"/>
-          <!-- the cold: hums and rests in tiny cycles but never drops, all night through -->
-          <path class="d cold" pathLength="1" style="--d:0" d="M40 76 L92 72 L120 80 L172 74 L200 80 L252 73 L280 79 L332 75 L360 80 L412 74 L440 79 L492 74 L520 80 L572 74 L604 77"/>
-          <line class="d soft" pathLength="1" style="--d:2" x1="40" y1="236" x2="604" y2="236"/>
-          <text class="lbl lbl--ink" x="604" y="64" text-anchor="end">the cold &middot; never drops</text>
-          <text class="lbl" x="385" y="198" text-anchor="middle">everything else winds down</text>
-          <text class="lbl" x="300" y="256" text-anchor="middle">store closes</text>
-          <text class="lbl" x="470" y="256" text-anchor="middle">store opens</text>
-          <text class="lbl soft-t" x="322" y="288" text-anchor="middle">one store &middot; one day &middot; the cold is the only line that never rests</text>
-        </svg>
-        <figcaption>Fig. 03 &middot; The one load that runs every hour of the year</figcaption>
-      </figure>
-      <figure class="plate plate--dark">
-        <div class="plate__frame"><img src="assets/img/always-night.jpg" alt="Illustrative: a supermarket after closing, dark except for the glow of the refrigerated cases still running down the aisle" loading="lazy"></div>
-        <figcaption>Survey plate 1 &middot; A store after close, lit only by the cold still running &middot; illustrative<sup class="fn"><a href="#notes" aria-label="See note 1">1</a></sup></figcaption>
-      </figure>
-      <p class="always__note">This is why we start with the meter, not the roof: the fix that pays most in a store is usually the one attached to the load that never gets to rest.</p>
-    </div>
-  </section>
 
   <!-- BEAT 2 · THE GUIDE · the diagnostician's dossier -->
   <section class="beat beat--rule" id="guide" aria-labelledby="guide-h">
@@ -307,6 +243,38 @@
         <div class="workfile__dots" data-wf-dots aria-label="Selected work navigation"></div>
       </div>
       <p class="quiet">Prefer to watch? <a class="textlink" href="#film">The whole method in a 6-minute film, below</a></p>
+    </div>
+  </section>
+
+  <!-- BEAT 1.75 · NEVER CLOCKS OUT · the fork's signature, on graphite -->
+  <section class="beat beat--dark always" id="always" aria-labelledby="always-h">
+    <div class="wrap beat__narrow">
+      <h2 id="always-h">The cold never clocks out.</h2>
+      <p class="lead lead--dark always__lede-num">At close, the lights dim, the registers go quiet, and the rooftops set back for the night. <strong>The refrigeration doesn't.</strong> It holds your product through every dark hour, which is why it's the one load that runs the entire year &mdash; and the one place waste compounds around the clock.<sup class="fn"><a href="#notes" aria-label="See note 12">12</a></sup></p>
+      <p class="readout readout--cold">8,760<small><strong>hours a year the compressors never stop.</strong> A rooftop rests half the day; a refrigeration circuit never gets to.</small></p>
+      <figure class="fig" aria-label="Diagram: over one day, the store's other loads fall away overnight while the refrigeration line stays high the entire time, including through the closed hours">
+        <svg viewBox="0 0 640 300" role="img" aria-hidden="true">
+          <rect class="nightband fade" style="--o:0.07" x="300" y="44" width="170" height="192"/>
+          <line class="dash" x1="300" y1="52" x2="300" y2="236"/>
+          <line class="dash" x1="470" y1="52" x2="470" y2="236"/>
+          <!-- everything else: high while the store is open, winds down overnight -->
+          <path class="d trace-off" pathLength="1" style="--d:1" d="M40 100 L84 94 L128 102 L172 96 L216 104 L260 98 L300 100 L322 140 L344 186 L366 212 L404 216 L440 214 L470 210 L492 150 L514 110 L540 100 L572 104 L604 100"/>
+          <!-- the cold: hums and rests in tiny cycles but never drops, all night through -->
+          <path class="d cold" pathLength="1" style="--d:0" d="M40 76 L92 72 L120 80 L172 74 L200 80 L252 73 L280 79 L332 75 L360 80 L412 74 L440 79 L492 74 L520 80 L572 74 L604 77"/>
+          <line class="d soft" pathLength="1" style="--d:2" x1="40" y1="236" x2="604" y2="236"/>
+          <text class="lbl lbl--ink" x="604" y="64" text-anchor="end">the cold &middot; never drops</text>
+          <text class="lbl" x="385" y="198" text-anchor="middle">everything else winds down</text>
+          <text class="lbl" x="300" y="256" text-anchor="middle">store closes</text>
+          <text class="lbl" x="470" y="256" text-anchor="middle">store opens</text>
+          <text class="lbl soft-t" x="322" y="288" text-anchor="middle">one store &middot; one day &middot; the cold is the only line that never rests</text>
+        </svg>
+        <figcaption>Fig. 03 &middot; The one load that runs every hour of the year</figcaption>
+      </figure>
+      <figure class="plate plate--dark">
+        <div class="plate__frame"><img src="assets/img/always-night.jpg" alt="Illustrative: a supermarket after closing, dark except for the glow of the refrigerated cases still running down the aisle" loading="lazy"></div>
+        <figcaption>Survey plate 1 &middot; A store after close, lit only by the cold still running &middot; illustrative<sup class="fn"><a href="#notes" aria-label="See note 1">1</a></sup></figcaption>
+      </figure>
+      <p class="always__note">This is why we start with the meter, not the roof: the fix that pays most in a store is usually the one attached to the load that never gets to rest.</p>
     </div>
   </section>
 
@@ -528,7 +496,7 @@
       <details class="gate">
         <summary><span class="plus" aria-hidden="true">+</span>If you own the P&amp;L</summary>
         <div class="gate__body">
-          <p>Every fix must clear a roughly two-year payback bar, or run cash-flow positive from day one, on your own numbers.<sup class="fn"><a href="#notes" aria-label="See notes 1 and 2">1, 2</a></sup> At a 1.7% net margin, a two-year payback on energy is the cheapest profit available to a food retailer, and it repeats in every store you own.<sup class="fn"><a href="#notes" aria-label="See note 13">13</a></sup> If we can't prove the savings, nothing is installed and you owe nothing. Every rebate, credit, and deduction your project qualifies for is found and filed for you.<sup class="fn"><a href="#notes" aria-label="See notes 3 and 4">3, 4</a></sup></p>
+          <p>Every fix must clear a roughly two-year payback bar, or run cash-flow positive from day one, on your own numbers.<sup class="fn"><a href="#notes" aria-label="See notes 1 and 2">1, 2</a></sup> A two-year payback on energy is the cheapest profit available to a food retailer, and it repeats in every store you own.<sup class="fn"><a href="#notes" aria-label="See note 13">13</a></sup> If we can't prove the savings, nothing is installed and you owe nothing. Every rebate, credit, and deduction your project qualifies for is found and filed for you.<sup class="fn"><a href="#notes" aria-label="See notes 3 and 4">3, 4</a></sup></p>
         </div>
       </details>
       <details class="gate">
