@@ -120,7 +120,7 @@
       if (l) l.remove();
     });
     addEventListener("message", (e) => {
-      if (!/danknowsaguy-web\.github\.io$/.test(new URL(e.origin || "https://x.invalid").hostname)) return;
+      if (e.origin !== location.origin && !/danknowsaguy-web\.github\.io$/.test(new URL(e.origin || "https://x.invalid").hostname)) return;
       let h = null;
       if (typeof e.data === "number") h = e.data;
       else if (e.data && typeof e.data === "object" && typeof e.data.height === "number") h = e.data.height;

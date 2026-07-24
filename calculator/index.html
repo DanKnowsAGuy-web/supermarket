@@ -1,0 +1,1059 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Energy Plus — Supermarket Savings Estimator</title>
+<meta name="description" content="A conservative, defensible savings range for supermarkets and grocery stores, anchored to DOE consumption data and metered results from installed sites.">
+<link rel="stylesheet" href="../assets/fonts/report-fonts.css">
+<style>
+  :root{
+    /* Field Report tokens, ported for the estimator */
+    --paper:oklch(0.985 0 0);--paper-2:oklch(0.955 0 0);--rule:oklch(0.8 0 0);--rule-soft:oklch(0.9 0 0);
+    --ink-fr:oklch(0.17 0.005 270);--body-fr:oklch(0.33 0.005 270);--faint:oklch(0.46 0.005 270);
+    --graphite:oklch(0.17 0.006 260);--panel-ink:oklch(0.95 0.002 260);--panel-body:oklch(0.79 0.005 260);
+    --amber:oklch(0.82 0.15 80);--amber-ink:oklch(0.5 0.11 70);--amber-wash:oklch(0.965 0.025 85);
+    --cold:oklch(0.83 0.1 233);--cold-ink:oklch(0.52 0.1 240);
+    /* remap the estimator's own roles onto the Field Report (dark theme -> paper document) */
+    --bg:var(--paper);--panel:var(--paper);--panel2:var(--paper-2);--ink:var(--ink-fr);--body:var(--body-fr);--muted:var(--faint);
+    --line:var(--rule-soft);--line2:var(--rule);
+    --teal:var(--ink-fr);--teal-deep:var(--ink-fr);--copper:var(--ink-fr);--star:var(--amber-ink);--violet:var(--ink-fr);--green:var(--amber-ink);
+    --serif:"Archivo",system-ui,sans-serif;--sans:"Archivo",system-ui,sans-serif;--mono:"Spline Sans Mono",ui-monospace,monospace;
+    --t-0:.78rem;--t-1:1rem;--t-2:1.28rem;--t-3:1.64rem;--t-4:2.1rem;--t-5:2.69rem;
+    --z-sticky:10;--z-toast:20;
+  }
+  *{box-sizing:border-box}html,body{margin:0}
+  html{font-size:18px}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.62;-webkit-font-smoothing:antialiased}
+  .shell{max-width:720px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+  .bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem clamp(1.1rem,4vw,2rem);border-bottom:1px solid var(--line);background:#0f1418;position:sticky;top:0;z-index:var(--z-sticky)}
+  .brand{font-family:var(--mono);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--teal)}
+  .bar-right{display:flex;align-items:center;gap:.6rem}
+  .demo{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 9px}
+  .lang{display:flex;border:1px solid var(--line2);border-radius:999px;overflow:hidden}
+  .lang button{background:none;border:none;color:var(--muted);font-family:var(--mono);font-size:.72rem;padding:.3rem .7rem;cursor:pointer}
+  .lang button.on{background:var(--teal-deep);color:#fff}
+  .stage{flex:1;padding:clamp(1.3rem,5vw,2.4rem) clamp(1.1rem,4vw,2rem)}
+  .steps{display:flex;gap:.4rem;margin-bottom:1.6rem}
+  .dot{height:4px;flex:1;border-radius:999px;background:var(--line2);transition:background .3s,flex .4s}
+  .dot.on{background:var(--teal)}
+  .screen{display:none}
+  .screen.active{display:block;animation:fade .34s cubic-bezier(.22,1,.36,1)}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}}
+  h1,h2{font-family:var(--serif);font-weight:500;letter-spacing:-.02em;line-height:1.1;text-wrap:balance;margin:0 0 .45rem}
+  h1{font-size:clamp(1.8rem,5.5vw,2.69rem)}
+  h2{font-size:clamp(1.4rem,4.5vw,2.1rem)}
+  h1 em,h2 em{font-style:italic;color:var(--teal)}
+  .lede{color:var(--body);max-width:60ch;margin:0 0 1.3rem;font-size:1.08rem;text-wrap:pretty}
+  .kick{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin:0 0 .55rem}
+  label.fl{display:flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.82rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:1.4rem 0 .6rem}
+  .hint{font-family:var(--mono);font-size:.78rem;color:var(--muted);margin:.45rem 0 0;line-height:1.6;max-width:64ch}
+  .grid{display:grid;gap:.55rem}
+  .gauto{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  .opt{display:flex;flex-direction:column;gap:.15rem;padding:.9rem 1rem;border:1px solid var(--line2);border-radius:11px;background:var(--panel);cursor:pointer;transition:border-color .16s,background .16s,transform .16s;text-align:left;font:inherit;color:inherit}
+  .opt:hover{transform:translateY(-2px)}
+  .opt:focus-visible,.chip:focus-visible,.btn:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+  .opt.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 13%,var(--panel))}
+  .opt b{font-size:1.02rem;color:var(--ink)}
+  .opt span{font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+  select,input[type=text],input[type=number]{width:100%;background:var(--panel);color:var(--ink);border:1px solid var(--line2);border-radius:11px;padding:.8rem .95rem;font:inherit;font-size:1rem;outline:none}
+  select:focus,input:focus{border-color:var(--teal)}
+  select{max-width:26rem}
+  .btn{display:inline-flex;align-items:center;gap:.55rem;font-family:var(--sans);font-weight:600;font-size:1rem;padding:.9rem 1.6rem;border-radius:999px;border:1px solid transparent;background:var(--ink);color:var(--bg);cursor:pointer;text-decoration:none;transition:transform .2s,background .2s;min-height:48px}
+  .btn:hover{transform:translateY(-2px)}
+  .btn--teal{background:var(--teal-deep);color:#fff}
+  .btn--ghost{background:none;border-color:var(--line2);color:var(--body)}
+  .btn[disabled]{opacity:.4;cursor:not-allowed;transform:none}
+  .actions{margin-top:2rem;display:flex;gap:.8rem;flex-wrap:wrap;align-items:center}
+  .back{background:none;border:none;color:var(--muted);font-family:var(--mono);font-size:.8rem;cursor:pointer;padding:.5rem 0;min-height:44px}
+  .back:hover{color:var(--body)}
+  .chip{padding:.55rem .95rem;border:1px solid var(--line2);border-radius:999px;background:var(--panel);color:var(--body);cursor:pointer;font:inherit;font-size:.92rem;transition:border-color .16s,background .16s;min-height:44px}
+  .chip.sel{border-color:var(--teal);color:var(--teal);background:color-mix(in srgb,var(--teal) 12%,transparent)}
+  .chips{display:flex;gap:.45rem;flex-wrap:wrap}
+  .factoid{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:.95rem 1.1rem;margin-top:1.1rem;color:var(--body);font-size:.95rem;line-height:1.6;max-width:62ch}
+  .factoid b{color:var(--ink)}
+  .factoid .src{display:block;font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-top:.4rem}
+  .insight-line{margin-top:1.1rem;font-family:var(--serif);font-size:var(--t-2);line-height:1.4;color:var(--ink);max-width:56ch}
+  .insight-line b{color:var(--teal);font-variant-numeric:tabular-nums}
+  .resume-chip{display:none;margin:1rem 0 0;border:1px solid color-mix(in srgb,var(--star) 35%,transparent);background:color-mix(in srgb,var(--star) 7%,transparent);border-radius:12px;padding:.8rem 1rem;font-size:.92rem;color:var(--body)}
+  .resume-chip.show{display:flex;gap:.8rem;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  .resume-chip button{background:none;border:1px solid var(--line2);border-radius:999px;color:var(--star);font:inherit;font-size:.85rem;padding:.4rem .9rem;cursor:pointer;min-height:40px}
+  /* results ledger: elevated, brighter than everything else */
+  .ledger{border:1px solid color-mix(in srgb,var(--teal) 32%,transparent);border-radius:16px;background:linear-gradient(180deg,color-mix(in srgb,var(--teal) 6%,var(--panel)) 0%,var(--panel) 60%);box-shadow:0 18px 44px -22px rgba(0,0,0,.7);overflow:hidden}
+  .lrow{border-bottom:1px solid var(--line)}
+  .lrow-main{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:.7rem;padding:.85rem 1.1rem}
+  .lrow-name{display:flex;flex-direction:column;min-width:0}
+  .lrow-name b{font-size:.98rem;color:var(--ink)}
+  .lrow-name .sub{font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+  .lrow-val{font-family:var(--serif);font-size:1.15rem;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.01em;white-space:nowrap}
+  .lrow.off .lrow-val{color:var(--muted);font-size:.9rem;font-family:var(--mono)}
+  .lrow-ctl{display:flex;align-items:center;gap:.35rem}
+  .tgl{width:40px;height:23px;border-radius:999px;background:var(--line2);border:none;position:relative;cursor:pointer;transition:background .2s;flex:none}
+  .tgl::after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:#fff;transition:left .2s}
+  .tgl.on{background:var(--teal-deep)}
+  .tgl.on::after{left:20px}
+  .how-btn{background:none;border:none;color:var(--muted);font-family:var(--mono);font-size:.9rem;cursor:pointer;padding:.35rem .45rem;transition:color .16s,transform .2s;min-width:36px;min-height:36px}
+  .how-btn:hover{color:var(--teal)}
+  .lrow.expanded .how-btn{transform:rotate(90deg);color:var(--teal)}
+  .how{display:none;padding:.2rem 1.1rem 1rem;color:var(--body);font-size:.92rem;line-height:1.6}
+  .lrow.expanded .how{display:block}
+  .how .src{font-family:var(--mono);font-size:.72rem;color:var(--muted);display:block;margin-top:.35rem}
+  .how .adj{display:inline-flex;align-items:center;gap:.4rem;margin-top:.55rem}
+  .how .adj input{width:5.2rem;padding:.4rem .6rem;text-align:right;font-family:var(--mono);font-size:.88rem}
+  .how .adj .u{font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+  .ltotal{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding:1.15rem;background:var(--panel2);flex-wrap:wrap}
+  .ltotal-lbl{font-family:var(--mono);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .ltotal-v{font-family:var(--serif);font-size:clamp(1.9rem,6vw,2.69rem);color:var(--star);font-variant-numeric:tabular-nums;line-height:1;letter-spacing:-.02em}
+  .lpct{width:100%;font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+  .cap-note{padding:.6rem 1.15rem .9rem;background:var(--panel2);font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+  /* horizon + portfolio */
+  .horizon{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.55rem;margin-top:.7rem}
+  .hz{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:.85rem .95rem;text-align:center}
+  .hz .v{font-family:var(--serif);font-size:1.3rem;color:var(--ink);font-variant-numeric:tabular-nums}
+  .hz .l{font-family:var(--mono);font-size:.74rem;color:var(--body);margin-top:.3rem}
+  .hz .ls{font-family:var(--mono);font-size:.68rem;color:var(--muted);margin-top:.15rem;line-height:1.4}
+  .esc-note{font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-top:.5rem;line-height:1.55;max-width:64ch}
+  .bene{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.55rem;margin-top:1.4rem}
+  .be{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:.85rem;text-align:center}
+  .be .bev{display:block;font-family:var(--serif);font-size:1.35rem;color:var(--teal);line-height:1.1}
+  .be .bel{display:block;font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-top:.35rem;line-height:1.4}
+  /* signature visual */
+  .sig{margin-top:1.8rem;border:1px solid var(--line);border-radius:16px;background:#0f1418;padding:1.2rem 1.2rem 1rem;overflow:hidden}
+  .sig h3{font-family:var(--serif);font-weight:500;font-size:var(--t-2);margin:0 0 .3rem}
+  .sig p{color:var(--body);font-size:.92rem;margin:.3rem 0 .9rem;max-width:62ch}
+  .sigrow{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+  @media(max-width:540px){.sigrow{grid-template-columns:1fr}}
+  .sigcol{text-align:center}
+  .sigcol .cap{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;margin-top:.4rem}
+  .sigcol.clean .cap{color:var(--teal)}
+  .sigcol.dirty .cap{color:var(--copper)}
+  .sigcol .meter{font-family:var(--mono);font-size:.78rem;color:var(--body);margin-top:.2rem}
+  .wave-clean{stroke-dasharray:6 0;animation:waveflow 3.2s linear infinite}
+  .wave-dirty{animation:waveflow 3.2s linear infinite}
+  @keyframes waveflow{to{stroke-dashoffset:-40}}
+  .glow{animation:heatglow 2.6s ease-in-out infinite}
+  @keyframes heatglow{0%,100%{opacity:.35}50%{opacity:.95}}
+  .sig-same{font-family:var(--mono);font-size:.78rem;color:var(--star);text-align:center;margin-top:.9rem}
+  /* hidden cost + equipment */
+  .hiddenbox{margin-top:1.8rem;border:1px solid color-mix(in srgb,var(--teal) 30%,transparent);background:color-mix(in srgb,var(--teal) 6%,transparent);border-radius:16px;padding:1.15rem 1.2rem}
+  .hiddenbox .hl{font-family:var(--serif);font-size:var(--t-2);margin:0 0 .6rem}
+  .hiddenbox .hv{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+  .hiddenbox .hv b{font-size:1rem}
+  .hiddenbox .hv .v{font-family:var(--serif);font-size:1.5rem;color:var(--teal);font-variant-numeric:tabular-nums}
+  .hiddenbox p{color:var(--body);font-size:.92rem;margin:.6rem 0 0;max-width:64ch}
+  .eqchips{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:.8rem}
+  .eqchip{font-family:var(--mono);font-size:.74rem;color:var(--body);border:1px solid var(--line2);border-radius:999px;padding:.35rem .8rem}
+  /* costs: quiet rules, no card chrome */
+  .costs{margin-top:1.8rem}
+  .costs h3{font-family:var(--serif);font-weight:500;font-size:var(--t-2);margin:0 0 .2rem}
+  .costs .cl{color:var(--body);font-size:.95rem;margin:.2rem 0 .6rem}
+  .costlist{list-style:none;margin:0;padding:0}
+  .costlist li{padding:.8rem 0;border-bottom:1px solid var(--line);color:var(--body);font-size:.95rem;line-height:1.6}
+  .costlist li strong{color:var(--copper);font-family:var(--serif);font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums}
+  /* takeaway row */
+  .takeaway{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.8rem}
+  .fit-line{margin-top:1.2rem;font-size:.95rem;color:var(--body)}
+  .fit-line b{color:var(--star)}
+  /* booking */
+  .expect{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:1.1rem 1.2rem;margin:1.2rem 0}
+  .expect ol{margin:.4rem 0 0;padding-left:1.2rem;color:var(--body);font-size:.95rem;line-height:1.7}
+  .expect .bring{margin-top:.8rem;font-size:.9rem;color:var(--star)}
+  .fine{font-family:var(--mono);font-size:.74rem;color:var(--muted);margin-top:1.5rem;max-width:64ch;line-height:1.6}
+  .fine a{color:var(--muted)}
+  .toast{position:fixed;left:50%;bottom:1.2rem;transform:translateX(-50%) translateY(8px);background:var(--panel2);border:1px solid var(--line2);border-radius:999px;color:var(--ink);font-size:.9rem;padding:.6rem 1.2rem;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:var(--z-toast)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  @media(prefers-reduced-motion:reduce){
+    .screen.active{animation:none}
+    .opt:hover,.btn:hover,.band-btn:hover{transform:none}
+    .wave-clean,.wave-dirty,.glow{animation:none}
+  }
+  /* ---------- one-pager print (flyer layout) ---------- */
+  #onepager{display:none}
+  @media print{
+    @page{margin:.55in}
+    body{background:#fff;color:#131b1e}
+    .shell,.toast{display:none!important}
+    #onepager{display:block;font-family:"Archivo",Arial,sans-serif;color:#131b1e;line-height:1.45}
+    #onepager *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .op-band{background:#14151a;color:#fff;padding:12pt 16pt;border-radius:6pt;display:flex;justify-content:space-between;align-items:baseline;gap:10pt;flex-wrap:wrap}
+    .op-band .b1{font-family:"Spline Sans Mono",monospace;font-size:10pt;letter-spacing:2.5pt;text-transform:uppercase}
+    .op-band .b2{font-size:8.5pt;opacity:.9}
+    .op-hero{padding:16pt 2pt 12pt;border-bottom:2.5pt solid #14151a;page-break-inside:avoid}
+    .op-hero .oph-lbl{font-family:"Spline Sans Mono",monospace;font-size:8pt;letter-spacing:1.8pt;text-transform:uppercase;color:#14151a}
+    .op-hero .oph-range{font-family:"Archivo",Georgia,sans-serif;font-weight:500;font-size:31pt;letter-spacing:-.5pt;margin:3pt 0 1pt;font-variant-numeric:tabular-nums}
+    .op-hero .oph-range small{font-size:12pt;color:#555;letter-spacing:0}
+    .op-hero .oph-sub{font-size:9.5pt;color:#444}
+    .op-meta{display:flex;gap:16pt;flex-wrap:wrap;padding:9pt 2pt;border-bottom:1pt solid #c9d1d0;font-size:9.5pt;page-break-inside:avoid}
+    .op-meta div{min-width:70pt}
+    .op-meta b{display:block;font-family:"Spline Sans Mono",monospace;font-weight:400;font-size:6.5pt;text-transform:uppercase;letter-spacing:1.2pt;color:#78827f;margin-bottom:1pt}
+    .op-cols{display:flex;gap:20pt;padding:12pt 2pt 4pt;align-items:flex-start}
+    .op-cols .c1{flex:1.45}.op-cols .c2{flex:1}
+    #onepager table{width:100%;border-collapse:collapse;font-size:9pt;page-break-inside:avoid}
+    #onepager th{font-family:"Spline Sans Mono",monospace;font-weight:400;font-size:6.5pt;text-transform:uppercase;letter-spacing:1pt;color:#78827f;text-align:left;padding:0 4pt 4pt 0;border-bottom:1.5pt solid #131b1e}
+    #onepager td{padding:5pt 4pt 5pt 0;border-bottom:.75pt solid #d7dedd;vertical-align:baseline}
+    #onepager td.num{text-align:right;white-space:nowrap;font-family:"Archivo",Georgia,sans-serif;font-size:10.5pt;font-variant-numeric:tabular-nums}
+    #onepager td .basis{display:block;font-size:7pt;color:#78827f;line-height:1.35;margin-top:1pt}
+    .op-hz-cap{font-family:"Spline Sans Mono",monospace;font-size:6.5pt;letter-spacing:1.2pt;text-transform:uppercase;color:#14151a;margin:0 0 4pt}
+    .op-note{font-size:7.5pt;color:#555;line-height:1.5;margin-top:8pt}
+    .op-cta{margin-top:12pt;border:1.5pt solid #14151a;border-radius:6pt;padding:9pt 12pt;font-size:10.5pt;color:#14151a;font-weight:600;page-break-inside:avoid}
+    .op-cta small{display:block;font-weight:400;font-size:8pt;color:#444;margin-top:2pt}
+    .op-src{font-family:"Spline Sans Mono",monospace;font-size:6.5pt;color:#78827f;margin-top:9pt;line-height:1.6}
+  }
+  /* ==================== FIELD REPORT SKIN (override layer) ==================== */
+  html{font-size:17px}
+  body{background-color:var(--paper);color:var(--body);font-family:var(--sans);line-height:1.6}
+  h1,h2{font-family:var(--sans);font-weight:780;font-stretch:112%;letter-spacing:-.018em;line-height:1.05;color:var(--ink)}
+  h1 em,h2 em{font-style:normal;color:var(--ink);font-weight:840}
+  .kick{color:var(--ink);font-weight:600}
+  .brand{color:var(--ink)}
+  .bar{background:var(--paper);border-bottom:2px solid var(--ink)}
+  .dot{background:var(--rule)}.dot.on{background:var(--ink)}
+  /* controls: solid rectangles, not pills */
+  .btn{border-radius:4px;background:var(--ink);color:var(--paper);border:1px solid var(--ink);font-weight:620;font-stretch:104%}
+  .btn--teal{background:var(--ink);color:var(--paper)}
+  .btn--ghost{background:none;border-color:var(--rule);color:var(--body)}
+  .btn:hover{transform:translateY(-1px)}
+  .opt,.chip,select,input[type=text],input[type=number],.how .adj input,.factoid,.expect,.resume-chip,.hz,.be,.sig,.hiddenbox,.ledger,.eqchip,.toast{border-radius:4px}
+  .opt{border-color:var(--rule)}
+  .opt.sel{border-color:var(--ink);background:var(--paper-2)}
+  .opt b{color:var(--ink)}
+  .chip{border-color:var(--rule)}
+  .chip.sel{border-color:var(--ink);color:var(--ink);background:var(--paper-2)}
+  select,input[type=text],input[type=number]{border-color:var(--rule)}
+  select:focus,input:focus,.opt:hover{border-color:var(--ink)}
+  .opt:focus-visible,.chip:focus-visible,.btn:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--amber-ink);outline-offset:2px}
+  /* value figures wear mono; verified totals wear the one amber signal */
+  .lrow-val,.hz .v,.be .bev,.hiddenbox .hv .v,.insight-line b,.op-hero .oph-range,#onepager td.num{font-family:var(--mono)}
+  .lrow-val{color:var(--ink)}
+  .insight-line{font-family:var(--sans)}
+  .ledger{border-color:var(--rule);background:var(--paper);box-shadow:0 1px 2px oklch(0.17 0.005 270/.05),0 22px 48px -34px oklch(0.17 0.005 270/.45)}
+  .lrow{border-color:var(--rule-soft)}
+  .ltotal{background:var(--paper-2)}
+  .ltotal-v{font-family:var(--mono);color:var(--amber-ink)}
+  .cap-note{background:var(--paper-2);color:var(--faint)}
+  .insight-line b,.be .bev,.hiddenbox .hv .v,.fit-line b,.sig-same{color:var(--amber-ink)}
+  .costlist li strong{color:var(--ink);font-family:var(--mono);font-weight:600}
+  .costlist li{border-color:var(--rule-soft)}
+  .tgl{background:var(--rule)}.tgl.on{background:var(--ink)}
+  .how-btn:hover,.lrow.expanded .how-btn{color:var(--ink)}
+  /* the "always included" harmonization box: the guarantee-plate treatment */
+  .hiddenbox{border:1px solid var(--amber-ink);background:var(--amber-wash)}
+  .hiddenbox .hv .v{color:var(--amber-ink)}
+  /* the signature comparison sits on a light instrument panel */
+  .sig{background:var(--paper-2);border-color:var(--rule)}
+  .sigcol.clean .cap{color:var(--ink)}
+  .sigcol.dirty .cap{color:var(--faint)}
+  .factoid{border-color:var(--rule)}.factoid b{color:var(--ink)}
+  .resume-chip{border-color:var(--amber-ink)!important;background:var(--amber-wash)!important}
+  .resume-chip button{color:var(--amber-ink);border-color:var(--rule)}
+  .toast{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  a{color:var(--ink)}
+  .fine a{color:var(--faint)}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="bar">
+    <span class="brand">Energy Plus</span>
+    <div class="bar-right">
+      <div class="lang" role="group" aria-label="Language">
+        <button id="lang-en" class="on" onclick="setLang('en')">EN</button>
+        <button id="lang-es" onclick="setLang('es')">ES</button>
+      </div>
+    </div>
+  </div>
+  <div class="stage">
+    <div class="steps" id="steps" aria-hidden="true"></div>
+
+    <!-- 0 · intro -->
+    <section class="screen active" data-s="0" aria-labelledby="h0">
+      <p class="kick" data-t="kick0">The 3-minute estimate</p>
+      <h1 id="h0" tabindex="-1" data-t="h0">Find the money hiding in your <em>store's power bill</em>.</h1>
+      <p class="lede" data-t="lede0">Refrigeration is the single largest load in a supermarket, and the average commercial building wastes about 30% of the energy it buys. Three questions tell you what that likely means for your stores, in dollars, with every assumption on the table. No email required.</p>
+      <div class="resume-chip" id="resume">
+        <span id="resume-txt"></span>
+        <button onclick="resumeSaved()" data-t="resumeBtn">Resume</button>
+      </div>
+      <div class="actions">
+        <button class="btn btn--teal" onclick="go(1)" data-t="start">Start the estimate</button>
+      </div>
+      <p class="fine" data-t="fine0">Estimates are conservative by design: the verified number from a facility review should beat this. Sources: EPA ENERGY STAR, DOE, EIA CBECS 2018. Assumptions last reviewed July 2026.</p>
+    </section>
+
+    <!-- 1 · state -->
+    <section class="screen" data-s="1" aria-labelledby="h1s">
+      <h2 id="h1s" tabindex="-1" data-t="h1">Where is the facility?</h2>
+      <p class="lede" data-t="lede1">Rates, climate, and your right to shop your rate all depend on the state.</p>
+      <label class="fl" for="region" data-t="lblState">State</label>
+      <select id="region" onchange="pickState(this.value)"></select>
+      <div class="factoid" id="state-factoid" style="display:none"></div>
+      <div class="actions">
+        <button class="btn" id="toFac" disabled onclick="go(3)" data-t="next">Continue</button>
+        <button class="back" onclick="go(0)" data-t="back">&larr; Back</button>
+      </div>
+    </section>
+
+
+    <!-- 3 · spend + bill + heat -->
+    <section class="screen" data-s="3" aria-labelledby="h3s">
+      <h2 id="h3s" tabindex="-1" data-t="h3">What does a month of electricity cost you?</h2>
+      <p class="lede" data-t="lede3">Closest band is fine. If you have a bill nearby, thirty extra seconds makes the estimate noticeably sharper.</p>
+      <div class="grid gauto" id="band-grid"></div>
+      <div class="factoid" id="benchmark" style="display:none"></div>
+      <label class="fl" data-t="lblHeat">How does the facility heat?</label>
+      <div class="chips" id="heat-chips"></div>
+      <div class="actions">
+        <button class="btn btn--teal" id="toResults" disabled onclick="go(4)" data-t="seeNumber">Show my number</button>
+        <button class="back" onclick="go(1)" data-t="back">&larr; Back</button>
+      </div>
+    </section>
+
+    <!-- 4 · results -->
+    <section class="screen" data-s="4" aria-labelledby="h4s">
+      <p class="kick" data-t="kick4">Your conservative range</p>
+      <h2 id="h4s" tabindex="-1" data-t="h4">Here is what your bill is likely hiding.</h2>
+      <p class="assump lede" id="assump" style="font-family:var(--mono);font-size:.82rem;color:var(--muted);max-width:none"></p>
+      <div class="ledger" id="ledger"></div>
+      <div class="sr-only" role="status" aria-live="polite" id="live-total"></div>
+      <label class="fl" data-t="lblCount">How many facilities do you operate?</label>
+      <div class="chips" id="count-chips"></div>
+      <p class="fit-line" id="fit-line"></p>
+      <label class="fl" data-t="lblHorizon">If rates keep climbing</label>
+      <div class="horizon">
+        <div class="hz"><div class="v" id="hz1">$0</div><div class="l" data-t="hz1l">This year</div><div class="ls" data-t="hz1s">at today's rates</div></div>
+        <div class="hz"><div class="v" id="hz5">$0</div><div class="l" data-t="hz5l">5-year total</div><div class="ls" data-t="hzs">cumulative, with rate escalation</div></div>
+        <div class="hz"><div class="v" id="hz10">$0</div><div class="l" data-t="hz10l">10-year total</div><div class="ls" data-t="hzs">cumulative, with rate escalation</div></div>
+      </div>
+      <p class="esc-note" id="esc-note"></p>
+      <div class="bene">
+        <div class="be"><span class="bev" data-t="be1v">up to 40%</span><span class="bel" data-t="be1l">lower maintenance, measured at one installed site (Gazelle Industries)</span></div>
+        <div class="be"><span class="bev" data-t="be2v">5–15 yrs</span><span class="bel" data-t="be2l">added equipment life from clean power and soft starts</span></div>
+        <div class="be"><span class="bev" data-t="be3v">30–40%</span><span class="bel" data-t="be3l">of equipment downtime is tied to power quality (industry estimates)</span></div>
+      </div>
+      <div class="sig">
+        <h3 data-t="sigH">Same meter reading. Different building.</h3>
+        <p id="sig-p" data-t="sigP">Modern equipment draws power in irregular pulses that distort the current on every circuit. Part of that power becomes waste heat in your own wiring before it does any work, your demand peaks run higher, and everything downstream runs hot.</p>
+        <div class="sigrow">
+          <div class="sigcol clean">
+            <svg viewBox="0 0 260 90" aria-label="Clean power: smooth wave, equipment running cool" role="img">
+              <path class="wave-clean" d="M5 45 C 25 15, 45 15, 65 45 S 105 75, 125 45 S 165 15, 185 45 S 225 75, 245 45" stroke="#14151a" stroke-width="2.5" fill="none" stroke-dasharray="8 4"/>
+              <rect x="105" y="62" width="50" height="22" rx="4" fill="none" stroke="rgba(20,21,26,.3)" stroke-width="1.5"/>
+              <circle cx="130" cy="73" r="6" fill="none" stroke="#14151a" stroke-width="1.5"/>
+            </svg>
+            <div class="cap" data-t="sigClean">Clean power</div>
+            <div class="meter" data-t="sigMeter1">Meter reads 100 kWh</div>
+          </div>
+          <div class="sigcol dirty">
+            <svg viewBox="0 0 260 90" aria-label="Distorted power: jagged wave, equipment running hot" role="img">
+              <path class="wave-dirty" d="M5 45 C 15 20, 22 70, 32 38 S 48 12, 58 55 S 74 78, 84 30 S 100 10, 110 52 S 126 80, 136 35 S 152 14, 162 58 S 178 74, 188 32 S 204 12, 214 50 S 234 72, 245 42" stroke="#767b82" stroke-width="2.5" fill="none" stroke-dasharray="8 4"/>
+              <rect x="105" y="62" width="50" height="22" rx="4" fill="none" stroke="rgba(20,21,26,.3)" stroke-width="1.5"/>
+              <circle cx="130" cy="73" r="6" fill="none" stroke="#767b82" stroke-width="1.5"/>
+              <circle class="glow" cx="130" cy="73" r="11" fill="none" stroke="#767b82" stroke-width="1"/>
+            </svg>
+            <div class="cap" data-t="sigDirty">With distortion</div>
+            <div class="meter" data-t="sigMeter2">Meter reads 100 kWh</div>
+          </div>
+        </div>
+        <p class="sig-same" data-t="sigSame">= SAME BILL · but heat, higher peaks, and early equipment failure on the right</p>
+      </div>
+      <div class="hiddenbox">
+        <p class="hl" id="hidden-lead"></p>
+        <div class="hv"><b data-t="hiddenLbl">Wasted through distortion today</b><span class="v" id="v-harmo">$0</span></div>
+        <p id="hidden-p" data-t="hiddenP">Cleaning it is the one lever that is always included, and the figures are calibrated to metered results where we have installed; other facility types use estimates you can adjust above.</p>
+        <div class="eqchips" id="eqchips"></div>
+      </div>
+      <div class="costs">
+        <h3 data-t="costsH">What early failure costs in a facility like yours</h3>
+        <p class="cl" id="costs-lede"></p>
+        <ul class="costlist" id="costlist"></ul>
+      </div>
+      <div class="takeaway">
+        <button class="btn btn--ghost" onclick="printOnePager()" data-t="printBtn">Print the one-pager</button>
+        <button class="btn btn--ghost" onclick="copyLink()" data-t="copyBtn">Copy a link to this estimate</button>
+      </div>
+      <div class="actions">
+        <button class="btn btn--teal" onclick="go(5)" data-t="toBook">Confirm it on a 22-minute review</button>
+        <button class="back" onclick="go(3)" data-t="back">&larr; Back</button>
+      </div>
+      <p class="fine" data-t="fine4">Illustrative estimate from the inputs you gave. Not a quote. Streams are estimated independently and can overlap at the top of the range, so the ceiling is an "up to" figure. Real savings and any incentives your project qualifies for are confirmed on the facility review, and the diagnosis is on us. Assumptions last reviewed July 2026.</p>
+    </section>
+
+    <!-- 5 · book -->
+    <section class="screen" data-s="5" aria-labelledby="h5s">
+      <p class="kick" data-t="kick5">The next 22 minutes</p>
+      <h2 id="h5s" tabindex="-1" data-t="h5">Turn the estimate into your number.</h2>
+      <p class="lede" data-t="lede5">A 22-Minute Facility Review is a phone call with an engineer, not a sales pitch. Your inputs and this estimate arrive with the booking, so the call starts where this page ends.</p>
+      <div class="expect">
+        <ol>
+          <li data-t="ex1">We walk this estimate line by line against your actual bill and rate structure.</li>
+          <li data-t="ex2">You learn which levers are real for your building and which are not, with the math shown.</li>
+          <li data-t="ex3">If it holds up, we scope the no-upfront-cost path. If it does not, you keep the analysis.</li>
+        </ol>
+        <p class="bring" data-t="exBring">Have one recent electric bill handy. That is all you need.</p>
+      </div>
+      <div class="actions">
+        <a class="btn btn--teal" id="book-link" href="#" target="_blank" rel="noopener" data-t="bookBtn">Pick a time</a>
+        <button class="back" onclick="go(4)" data-t="back">&larr; Back</button>
+      </div>
+      <p class="fine" data-t="fine5">No obligation. Energy Plus is an Independent Energy Solutions Partner with no vendor incentive to inflate these figures.</p>
+    </section>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<div id="onepager"></div>
+<script>
+/* ============ Energy Plus Savings Estimator — engine constants corrected July 2026 ============ */
+"use strict";
+/* ---- corrected engine constants (parity with original-engine.html, July 2026) ---- */
+var STATE_COOL={"Alabama":65,"Alaska":22,"Arizona":80,"Arkansas":65,"California":50,"Colorado":35,"Connecticut":35,"Delaware":50,"District of Columbia":50,"Florida":80,"Georgia":65,"Hawaii":80,"Idaho":22,"Illinois":35,"Indiana":35,"Iowa":35,"Kansas":50,"Kentucky":50,"Louisiana":80,"Maine":22,"Maryland":50,"Massachusetts":35,"Michigan":22,"Minnesota":22,"Mississippi":65,"Missouri":50,"Montana":22,"Nebraska":35,"Nevada":65,"New Hampshire":22,"New Jersey":35,"New Mexico":65,"New York":35,"North Carolina":65,"North Dakota":22,"Ohio":35,"Oklahoma":65,"Oregon":50,"Pennsylvania":35,"Rhode Island":35,"South Carolina":65,"South Dakota":22,"Tennessee":65,"Texas":80,"Utah":35,"Vermont":22,"Virginia":50,"Washington":50,"West Virginia":50,"Wisconsin":22,"Wyoming":22};
+var STATE_ABBR={"Alabama":"AL","Alaska":"AK","Arizona":"AZ","Arkansas":"AR","California":"CA","Colorado":"CO","Connecticut":"CT","Delaware":"DE","District of Columbia":"DC","Florida":"FL","Georgia":"GA","Hawaii":"HI","Idaho":"ID","Illinois":"IL","Indiana":"IN","Iowa":"IA","Kansas":"KS","Kentucky":"KY","Louisiana":"LA","Maine":"ME","Maryland":"MD","Massachusetts":"MA","Michigan":"MI","Minnesota":"MN","Mississippi":"MS","Missouri":"MO","Montana":"MT","Nebraska":"NE","Nevada":"NV","New Hampshire":"NH","New Jersey":"NJ","New Mexico":"NM","New York":"NY","North Carolina":"NC","North Dakota":"ND","Ohio":"OH","Oklahoma":"OK","Oregon":"OR","Pennsylvania":"PA","Rhode Island":"RI","South Carolina":"SC","South Dakota":"SD","Tennessee":"TN","Texas":"TX","Utah":"UT","Vermont":"VT","Virginia":"VA","Washington":"WA","West Virginia":"WV","Wisconsin":"WI","Wyoming":"WY"};
+/* item 8: state commercial rates, approximate EIA averages, cents/kWh. Refresh annually from EIA Electric Power Monthly Table 5.6.A. */
+var STATE_RATE={"Alabama":13.2,"Alaska":21.5,"Arizona":12.5,"Arkansas":10.5,"California":28.0,"Colorado":12.0,"Connecticut":22.5,"Delaware":12.5,"District of Columbia":16.5,"Florida":12.0,"Georgia":12.0,"Hawaii":39.0,"Idaho":9.5,"Illinois":11.5,"Indiana":13.0,"Iowa":10.5,"Kansas":11.5,"Kentucky":11.5,"Louisiana":11.0,"Maine":17.5,"Maryland":14.5,"Massachusetts":22.5,"Michigan":13.5,"Minnesota":12.5,"Mississippi":12.0,"Missouri":10.5,"Montana":11.5,"Nebraska":10.0,"Nevada":11.5,"New Hampshire":19.5,"New Jersey":15.5,"New Mexico":11.0,"New York":18.5,"North Carolina":10.5,"North Dakota":9.5,"Ohio":11.0,"Oklahoma":9.5,"Oregon":11.5,"Pennsylvania":12.5,"Rhode Island":21.0,"South Carolina":11.5,"South Dakota":10.5,"Tennessee":11.5,"Texas":9.5,"Utah":10.0,"Vermont":17.5,"Virginia":11.5,"Washington":10.5,"West Virginia":11.5,"Wisconsin":12.5,"Wyoming":9.5};
+var ESC_TIER={"California":1,"Hawaii":1,"Massachusetts":1,"New York":1,"New Jersey":1,"Connecticut":1,"Maryland":2,"District of Columbia":2,"Illinois":2,"Pennsylvania":2,"Texas":2,"Virginia":2,"Rhode Island":2,"New Hampshire":2,"Maine":2,"Delaware":2,"Vermont":2,"Washington":4,"Idaho":4,"Montana":4,"North Dakota":4,"South Dakota":4,"Nebraska":4,"Wyoming":4};
+var ESC_DATA={1:{range:"4–6%",rate:0.045},2:{range:"3–4%",rate:0.035},3:{range:"2–3%",rate:0.025},4:{range:"1–2%",rate:0.018}};
+var DEREG={"Connecticut":1,"Delaware":1,"Illinois":1,"Maine":1,"Maryland":1,"Massachusetts":1,"Michigan":1,"New Hampshire":1,"New Jersey":1,"New York":1,"Ohio":1,"Pennsylvania":1,"Rhode Island":1,"Texas":1,"District of Columbia":1};
+var OUTDOOR={cold:{f:.01,c:.03},super:{f:.02,c:.05},cstore:{f:.08,c:.15},hotel:{f:.04,c:.09},health:{f:.03,c:.07},fitness:{f:.03,c:.07},edu:{f:.05,c:.10},multi:{f:.05,c:.10},qsr:{f:.04,c:.08},office:{f:.05,c:.10},retail:{f:.06,c:.12},mixed:{f:.04,c:.08},whse:{f:.06,c:.12},ind:{f:.03,c:.07},datactr:{f:.01,c:.03},research:{f:.02,c:.05}};
+var HEATC={heatpump:.50,resistance:.70}; /* corrected ceilings, July 2026 */
+var COOL_FLOOR=.15,COOL_CEIL=.55,CEIL_CAP=.45; /* item 7: soft total-ceiling cap at 45% of bill */
+var MOTOR={ind:{ms:.55},cold:{ms:.50},whse:{ms:.40},health:{ms:.30}};
+/* Ordered by HVAC/cooling share of the bill, highest to lowest.
+   Data center corrected Jul 2026: cooling in a typical PUE ~1.4-1.6 facility runs
+   30 to 40% of load; the old 10% badly understated it. mLo/mHi are monthly spend
+   bounds per type (from the engine's annual slider ranges) that size the bands. */
+var FAC=[
+ {k:"cold",share:.70,harmo:.13,coolmin:98,sq:3.20,mLo:4200,mHi:420000},
+ {k:"super",share:.55,harmo:.09,coolmin:95,sq:8.00,mLo:5000,mHi:210000},
+ {k:"health",share:.45,harmo:.12,coolmin:0,sq:4.50,mLo:10000,mHi:1000000},
+ {k:"hotel",share:.45,harmo:.08,coolmin:0,sq:3.50,mLo:5000,mHi:420000},
+ {k:"cstore",share:.45,harmo:.09,coolmin:85,sq:10.00,mLo:1250,mHi:21000},
+ {k:"multi",share:.45,harmo:.08,coolmin:0,sq:1.40,mLo:2000,mHi:250000},
+ {k:"edu",share:.45,harmo:.09,coolmin:0,sq:2.50,mLo:2000,mHi:1250000},
+ {k:"fitness",share:.45,harmo:.13,coolmin:0,sq:3.20,mLo:2000,mHi:50000},
+ {k:"office",share:.40,harmo:.09,coolmin:0,sq:2.80,mLo:2000,mHi:330000},
+ {k:"retail",share:.40,harmo:.09,coolmin:0,sq:2.60,mLo:2000,mHi:250000},
+ {k:"qsr",share:.40,harmo:.09,coolmin:85,sq:5.50,mLo:1000,mHi:25000},
+ {k:"datactr",share:.35,harmo:.18,coolmin:98,sq:2.50,mLo:16000,mHi:4200000},
+ {k:"mixed",share:.35,harmo:.08,coolmin:0,sq:2.00,mLo:2000,mHi:330000},
+ {k:"research",share:.30,harmo:.14,coolmin:0,sq:2.50,mLo:8000,mHi:1650000},
+ {k:"whse",share:.20,harmo:.09,coolmin:0,sq:1.00,mLo:2000,mHi:165000},
+ {k:"ind",share:.15,harmo:.13,coolmin:0,sq:4.50,mLo:4200,mHi:1650000}
+];
+var COUNTS=[["one",1,1],["2to4",2,4],["5to9",5,9],["10to19",10,19],["20plus",20,20]];
+var EQUIP={cold:["Compressor racks","Evaporator fan arrays","VFD condensers"],super:["Rack refrigeration","Rooftop HVAC","Display case electronics"],cstore:["Reach-in condensers","Fuel electronics","Rooftop HVAC"],hotel:["Elevator motors","Per-room PTACs","Pool pumps"],health:["Imaging systems","Chiller plant","Process pumps"],fitness:["Pool pumps","Rooftop HVAC","High-bay lighting"],edu:["Chiller plant","Rooftop HVAC","High-bay lighting"],multi:["Elevator drives","Booster pumps","Amenity pumps"],qsr:["Walk-in condensers","Makeup air handlers","Exhaust hoods"],office:["Elevator VFDs","VAV air handlers","Server-room UPS"],retail:["Rooftop HVAC","LED driver arrays","Escalator motors"],mixed:["Elevator drives","Central HVAC plant","Amenity pumps"],whse:["Conveyor VFDs","Cold-chain refrigeration","Forklift chargers"],ind:["Production VFDs","Process pumps","Air compressors"],datactr:["UPS systems","Precision cooling","Switchgear"],research:["Analytical instruments","Cleanroom controls","HPC power"]};
+/* trimmed cost exposure lines (3 per type, from the sourced COSTS set) */
+var COSTS={
+ office:["Central chiller failure in summer: tenant abatement exposure of <strong>$200K to $500K per week</strong> for a 200,000 sq ft building.","Elevator emergency modernization: <strong>$15K to $60K per cab</strong> with 4 to 8 week lead times.","VAV air handler replacement: <strong>$15K to $50K per unit</strong>; most buildings run 10 to 30."],
+ hotel:["PTAC full-property replacement: <strong>$1,750 to $3,200 per unit installed</strong>; at 150 rooms that is <strong>$260K to $480K</strong>.","Elevator modernization: <strong>$50K to $150K per cab</strong>.","Chiller failure in summer: emergency rental <strong>$15K to $40K per week</strong> plus lost room revenue."],
+ health:["MRI or CT offline: <strong>$10K to $15K per day</strong> in direct revenue loss.","Sterilization failure halts elective surgery: <strong>$60K to $320K</strong> for one day of cases.","Chiller failure forces surgical suite closure within hours in summer."],
+ cold:["Rack system replacement: <strong>$15K to $80K per rack</strong>; catastrophic failure with product loss <strong>$10K to $100K</strong>.","Loss of heat rejection in summer forces compressor shutdown within hours: <strong>$20K to $60K</strong>.","After-hours emergency repair runs 2 to 3x scheduled cost."],
+ super:["Full rack replacement: <strong>$30K to $80K per system</strong>; most stores run several.","One overnight walk-in failure: <strong>$10K to $100K</strong> in product loss.","Rooftop unit failure risks health-code closure during food handling hours."],
+ retail:["A 3-day summer HVAC failure at a store doing <strong>$50K to $150K per day</strong> is <strong>$150K to $450K</strong> in lost sales.","Escalator motor overhaul: <strong>$20K to $60K per unit</strong>.","LED driver array replacement across a large floor: <strong>$30K to $120K</strong>."],
+ qsr:["Makeup air failure triggers health-code closure; replacement <strong>$8K to $25K</strong> while <strong>$8K to $15K per day</strong> of revenue stops.","Walk-in condensing unit replacement: <strong>$4K to $12K</strong> plus lost product.","Across a 20-location franchise, fleet exposure runs <strong>$120K to $440K a year</strong>."],
+ cstore:["A documented single-surge event took out pump readers, a compressor, cameras, and doors: <strong>$33K+</strong> (HSB).","24-hour fuel outage: <strong>$12K to $35K</strong> in lost fuel sales alone.","Walk-in failure: <strong>$3K to $8K</strong> product plus <strong>$4K to $12K</strong> emergency repair."],
+ whse:["Conveyor system failure: <strong>$50K to $200K per hour</strong> in unprocessed shipments.","Cold-chain failure: <strong>$50K to $500K+</strong> product loss; pharma can exceed <strong>$1M</strong>.","A 50-forklift fleet idled 8 hours: roughly <strong>$800K</strong> in delayed throughput."],
+ multi:["Elevator modernization: <strong>$50K to $150K per cab</strong>; a 3-cab mid-rise is a <strong>$150K to $450K</strong> event.","Booster pump failure makes floors above 3 uninhabitable: <strong>$8K to $25K</strong> emergency repair.","Summer chiller failure: rent abatement exposure across the building plus <strong>$15K to $40K per week</strong> rental."],
+ edu:["Chiller failure during finals across a campus: <strong>$100K to $500K</strong> combined impact.","Central boiler replacement: <strong>$50K to $300K</strong>; deferred failure costs about 3x planned.","Research equipment damage: electron microscopes run <strong>$500K to $5M</strong>."],
+ fitness:["Pool circulation failure forces health-code closure: <strong>$8K to $25K</strong> plus days of lost revenue.","Dehumidification unit failure: <strong>$15K to $60K</strong> plus moisture damage to the natatorium.","Cardio fleet failing early across 50 to 100 machines: <strong>$50K to $150K</strong> unplanned."],
+ ind:["Line-down VFD failure: <strong>$5K to $50K per hour</strong> while awaiting parts.","Air compressor failure stops pneumatics plant-wide: <strong>$10K to $100K per hour</strong>.","Motor rewind or replacement: <strong>$2K to $20K per motor</strong>; harmonic heating is the hidden cause."],
+ datactr:["Unplanned downtime: <strong>$100K to $300K per hour</strong> for financial tenants.","A 2-hour cooling failure in a 1MW hall: <strong>$33K</strong> direct plus SLA penalties up to <strong>$500K</strong>.","Fleet-wide PSU degradation: <strong>$500K to $2M</strong> unplanned capital event."],
+ research:["Electron microscopes and NMR: <strong>$500K to $5M per unit</strong>; power events corrupt results and shorten life.","Cleanroom re-qualification after a control failure: 3 to 7 days, <strong>$150K to $1.4M</strong>.","One corrupted HPC job can erase weeks of compute worth <strong>$50K to $500K</strong>."],
+ mixed:["Chiller failure hits residential and commercial tenants at once: <strong>$100K to $300K per week</strong> abatement exposure.","Elevator failure in a mixed high-rise: <strong>$100K to $300K</strong> combined event.","A power event damaging a medical tenant's equipment creates direct landlord liability: <strong>$200K to $500K</strong>."]
+};
+/* ---- item 5: EN/ES strings ---- */
+var STR={
+en:{
+ kick0:"The 3-minute estimate",h0:'Find the money hiding in your <em>store\'s power bill</em>.',
+ lede0:"Refrigeration is the single largest load in a supermarket, and the average commercial building wastes about 30% of the energy it buys. Three questions tell you what that likely means for your stores, in dollars, with every assumption on the table. No email required.",
+ start:"Start the estimate",resumeBtn:"Resume",resumeTxt:function(d){return "You have an estimate from "+d+".";},
+ fine0:"Estimates are conservative by design: the verified number from a facility review should beat this. Sources: EPA ENERGY STAR, DOE, EIA CBECS 2018. Assumptions last reviewed July 2026.",
+ h1:"Where are your stores?",lede1:"Rates, climate, and your right to shop your rate all depend on the state.",lblState:"State",next:"Continue",back:"← Back",
+ stateFact:function(ab,rate,esc,dereg){return "Commercial electricity in "+ab+" averages about <b>"+rate+"¢ per kWh</b>, and rates there have been rising roughly <b>"+esc+" a year</b>."+(dereg?" It is also a deregulated market: you have the legal right to shop your rate, and most operators never use it.":"")+"<span class='src'>EIA state averages, approximate · escalation tiers reviewed July 2026</span>";},
+ h2:"What kind of facility?",lede2:"Each type wastes power in its own way. This sets which levers apply to you.",
+ facHv:function(p){return "HVAC ≈ "+p+"% of the bill";},
+ facInsight:function(noun,lo,hi){return "In a typical "+noun+", the addressable waste runs <b>"+lo+"% to "+hi+"%</b> of the annual bill, computed from the same levers you are about to see.";},
+ h3:"What does a month of electricity cost one store?",
+ lede3:"Closest band is fine. The bands are sized for your facility type, and the review confirms the real number.",
+ bandUnder:function(v){return "Under "+v+"/mo";},bandOver:function(v){return "Over "+v+"/mo";},
+ bench:function(kwh,sq,state,rate){return "That spend is roughly <b>"+kwh+" kWh a year</b> at "+state+"'s average commercial rate ("+rate+"¢/kWh), which fits a facility around <b>"+sq+" sq ft</b>. If your building is much smaller than that, you are likely paying above-market and the rate itself is a lever.<span class='src'>Benchmark from approximate EIA state rates and CBECS-derived intensity</span>";},
+ lblHeat:"How does the store heat?",heatOpts:[["gas","Gas or other fuel"],["heatpump","Electric heat pump"],["resistance","Electric resistance"],["dontknow","Not sure"]],
+ seeNumber:"Show my number",
+ kick4:"Your conservative range",h4:"Here is what your bill is likely hiding.",
+ assump:function(fac,st,spend,split,heat){return fac+" · "+st+" · "+spend+"/yr · HVAC split "+split+" · "+heat;},
+ heatLbl:{gas:"heats with gas",heatpump:"electric heat pump",resistance:"electric resistance heat",dontknow:"heating type unknown"},
+ streams:{
+  harmo:{name:"Power harmonization",sub:"always included",how:function(p){return "Your facility type is set at <b>"+p+"%</b> of the bill. This figure is calibrated to metered results at installed sites for some facility types and estimated for others; the physical channels are waste heat in your own wiring and transformers, higher demand peaks, and power-factor penalties where billed.";},src:"Energy Plus metered installations · estimates where noted · IEEE 519"},
+  cool:{name:"Cooling optimization",sub:"controls, refrigerant, staging",how:function(hs,cs){return "HVAC is about <b>"+hs+"%</b> of your bill (DOE/CBECS average for your type) and roughly <b>"+cs+"%</b> of that is cooling in your state. DOE retrofit and retro-commissioning studies show 15% to 55% savings on cooling spend.";},src:"EIA CBECS 2018 · DOE HVAC retrofit case studies"},
+  heat:{name:"Heating conversion",sub:"heat pump upgrade",how:function(){return "If you heat electrically, replacing resistance heat with a COP-3 heat pump saves up to 70% of heating spend (a COP-3 unit uses about a third of the energy). When the heating type is unknown we bracket: floor assumes you already run a heat pump, ceiling assumes resistance.";},src:"DOE heat pump guidance · corrected ceiling, July 2026"},
+  dem:{name:"Peak demand",sub:"demand charges",how:function(dp,anchored){return "Demand charges are "+(anchored?"<b>"+dp+"% of your bill (from your bill)</b>":"assumed at <b>"+dp+"%</b> of your bill (typical range 30 to 50%)")+". The floor trims 5% of that through staging and soft starts; the battery option caps at 50% of demand charges, in line with industry peak-shaving results of 10 to 50%.";},src:"NREL / industry peak-shaving results · corrected cap, July 2026"},
+  lit:{name:"Outdoor lighting",sub:"solar + LED conversion",how:function(f,c){return "Exterior lighting for your facility type runs about "+f+"% to "+c+"% of the bill. Off-grid solar fixtures remove that load from the meter entirely.";},src:"Lighting share estimates by facility type"},
+  nego:{name:"Rate negotiation",sub:"deregulated market",how:function(){return "Your state lets you shop your supply rate. Brokered commercial contracts typically land 2.5% to 6% below default supply pricing. Off by default; turn it on if you have never bid your rate.";},src:"State retail-choice programs"},
+  mot:{name:"Motor optimization",sub:"soft starts + drive control",how:function(){return "For motor-heavy facilities: a conservative estimate of soft-start and drive-control savings applied to the demand portion of the bill. Documented case-by-case on the review.";},src:"Energy Plus engineering estimate · confirmed on review"},
+  bat:{name:"Battery peak shaving",sub:"raises the demand ceiling",how:function(){return "Adds storage to clip your worst spikes. Capped at 50% of demand charges; total elimination is not realistic because of ratchets and coincident peaks.";},src:"Industry peak-shaving results, 10 to 50%"}
+ },
+ on:"on",off:"off",totalLbl:"Annual range · per store",
+ pct:function(a,b){return a+"% to "+b+"% of your annual bill";},
+ capNote:"Ceiling capped at 45% of the bill: streams overlap at the top of the range, so we clip the sum rather than print an implausible number.",
+ lblCount:"How many stores do you operate?",countLbls:{"one":"1","2to4":"2–4","5to9":"5–9","10to19":"10–19","20plus":"20+"},
+ portfolio:function(lo,hi){return "Across your portfolio: <b>"+lo+"</b> to <b>"+hi+"</b> a year, using the fewest sites at the lowest per-site savings for the floor.";},
+ fitEquip:"Best fit: equipment-level program. Below about $1,500/month per site, the turnkey program does not pencil, but the harmonization hardware still does.",
+ fitTurnkey:function(){return "You likely qualify for the <b>turnkey program</b>: day-one positive cash flow, no upfront cost.";},
+ fitWarm:function(n){return "At your spend, the turnkey program typically needs "+n+"+ sites; with fewer, we scope it case by case on the review.";},
+ lblHorizon:"If rates keep climbing",hz1l:"This year",hz1s:"at today's rates",hz5l:"5-year total",hz10l:"10-year total",hzs:"cumulative, with rate escalation",
+ escNote:function(rg,ab){return "Totals assume "+rg+" average annual rate increases ("+ab+" tier, EIA history, reviewed July 2026). Recent national commercial increases have run above these tiers, so the projection is conservative.";},
+ be1v:"up to 40%",be1l:"lower maintenance, measured at one installed site (Gazelle Industries)",
+ be2v:"5–15 yrs",be2l:"added equipment life from clean power and soft starts",
+ be3v:"30–40%",be3l:"of equipment downtime is tied to power quality (industry estimates)",
+ sigH:"Same meter reading. Different store.",
+ sigP:"Every compressor and rack in the store draws power in irregular pulses that distort the current on every circuit. Part of that power becomes waste heat in your own wiring before it cools anything, your demand peaks run higher, and everything downstream runs hot.",
+ sigClean:"Clean power",sigDirty:"With distortion",sigMeter1:"Meter reads 100 kWh",sigMeter2:"Meter reads 100 kWh",
+ sigSame:"= SAME BILL · but heat, higher peaks, and early equipment failure on the right",
+ hiddenLead:function(noun){return "For your "+noun+", the second half of the story is your equipment.";},
+ hiddenLbl:"Wasted through distortion today",
+ hiddenP:"Cleaning it is the one lever that is always included, and the figures are calibrated to metered results where we have installed; other facility types use estimates you can adjust above.",
+ costsH:"What early failure costs in a facility like yours",
+ costsLede:function(noun){return "When distortion wears these systems out early, the exposure for a "+noun+" looks like this:";},
+ printBtn:"Print the one-pager",copyBtn:"Copy a link to this estimate",copied:"Link copied. It reopens this exact estimate.",
+ toBook:"Confirm it on a 22-minute review",
+ fine4:'Illustrative estimate from the inputs you gave. Not a quote. Streams are estimated independently and can overlap at the top of the range, so the ceiling is an "up to" figure. Real savings and any incentives your project qualifies for are confirmed on the facility review, and the diagnosis is on us. Assumptions last reviewed July 2026.',
+ kick5:"The next 22 minutes",h5:"Turn the estimate into your number.",
+ lede5:"A 22-Minute Facility Review is a phone call with an engineer, not a sales pitch. Your inputs and this estimate arrive with the booking, so the call starts where this page ends.",
+ ex1:"We walk this estimate line by line against your actual bill and rate structure.",
+ ex2:"You learn which levers are real for your building and which are not, with the math shown.",
+ ex3:"If it holds up, we scope the no-upfront-cost path. If it does not, you keep the analysis.",
+ exBring:"Have one recent electric bill handy. That is all you need.",
+ bookBtn:"Pick a time",
+ fine5:"No obligation. Energy Plus is an Independent Energy Solutions Partner with no vendor incentive to inflate these figures.",
+ facNames:{office:"Office",hotel:"Hotel",health:"Healthcare",cold:"Cold storage",super:"Supermarket",retail:"Retail",qsr:"Restaurant / QSR",cstore:"Convenience / fuel",whse:"Warehouse",multi:"Multifamily",edu:"Education",fitness:"Fitness / gym",ind:"Industrial / mfg",datactr:"Data center",research:"Research / lab",mixed:"Mixed / other"},
+ facNouns:{office:"office building",hotel:"hospitality property",health:"healthcare facility",cold:"cold storage facility",super:"grocery store",retail:"retail space",qsr:"quick-serve restaurant",cstore:"convenience store",whse:"distribution warehouse",multi:"multifamily property",edu:"school",fitness:"fitness center",ind:"manufacturing facility",datactr:"data center",research:"research campus",mixed:"mixed-use property"},
+ opTitle:"Estimated annual savings",opFor:"Prepared from your inputs at the Energy Plus estimator",opStream:"Lever",opRange:"Annual range",opBasis:"Basis",
+ opMeta:{fac:"Facility",state:"State",spend:"Annual spend",heat:"Heating",count:"Facilities"},opPerFac:"conservative range · per store",
+ opNote:"Conservative by design: floors understate, ceilings are 'up to' figures, and streams can overlap at the top of the range. The verified number from a 22-Minute Facility Review should beat this estimate. Not a quote.",
+ opCta:function(u){return "Book the 22-minute review: "+u;},
+ opSrc:"Sources: EPA ENERGY STAR (30% average waste) · EIA CBECS 2018 (HVAC shares) · DOE retrofit case studies (cooling 15–55%) · EIA state rates and escalation history · industry peak-shaving results (battery cap 50%) · Energy Plus metered installations. Assumptions reviewed July 2026."
+},
+es:{
+ kick0:"La estimación de 3 minutos",h0:'Encuentre el dinero escondido en la <em>factura de su tienda</em>.',
+ lede0:"La refrigeración es la mayor carga de un supermercado, y el edificio comercial promedio desperdicia cerca del 30% de la energía que compra. Tres preguntas le dicen qué significa eso para sus tiendas, en dólares, con cada supuesto a la vista. Sin correo electrónico.",
+ start:"Comenzar la estimación",resumeBtn:"Continuar",resumeTxt:function(d){return "Tiene una estimación del "+d+".";},
+ fine0:"Estimaciones conservadoras por diseño: el número verificado de una revisión debería superar esto. Fuentes: EPA ENERGY STAR, DOE, EIA CBECS 2018. Supuestos revisados en julio de 2026.",
+ h1:"¿Dónde están sus tiendas?",lede1:"Las tarifas, el clima y su derecho a negociar dependen del estado.",lblState:"Estado",next:"Continuar",back:"← Atrás",
+ stateFact:function(ab,rate,esc,dereg){return "La electricidad comercial en "+ab+" promedia <b>"+rate+"¢ por kWh</b> y ha subido aproximadamente <b>"+esc+" al año</b>."+(dereg?" Además es un mercado desregulado: tiene el derecho legal de negociar su tarifa, y la mayoría nunca lo usa.":"")+"<span class='src'>Promedios estatales EIA, aproximados · revisado julio 2026</span>";},
+ h2:"¿Qué tipo de instalación?",lede2:"Cada tipo desperdicia energía a su manera. Esto define qué palancas aplican.",
+ facHv:function(p){return "Climatización ≈ "+p+"% de la factura";},
+ facInsight:function(noun,lo,hi){return "En un "+noun+" típico, el desperdicio abordable es <b>"+lo+"% a "+hi+"%</b> de la factura anual, calculado con las mismas palancas que verá a continuación.";},
+ h3:"¿Cuánto cuesta un mes de electricidad en una tienda?",
+ lede3:"La banda más cercana es suficiente. Las bandas se ajustan a su tipo de instalación, y la revisión confirma el número real.",
+ bandUnder:function(v){return "Menos de "+v+"/mes";},bandOver:function(v){return "Más de "+v+"/mes";},
+ bench:function(kwh,sq,state,rate){return "Ese gasto equivale a unos <b>"+kwh+" kWh al año</b> a la tarifa comercial promedio de "+state+" ("+rate+"¢/kWh), lo que corresponde a una instalación de unos <b>"+sq+" pies²</b>. Si su edificio es mucho más pequeño, probablemente paga sobre el mercado y la tarifa misma es una palanca.<span class='src'>Comparativa de tarifas aproximadas EIA e intensidad CBECS</span>";},
+ lblHeat:"¿Cómo calienta la tienda?",heatOpts:[["gas","Gas u otro combustible"],["heatpump","Bomba de calor eléctrica"],["resistance","Resistencia eléctrica"],["dontknow","No estoy seguro"]],
+ seeNumber:"Ver mi número",
+ kick4:"Su rango conservador",h4:"Esto es lo que su factura probablemente esconde.",
+ assump:function(fac,st,spend,split,heat){return fac+" · "+st+" · "+spend+"/año · climatización "+split+" · "+heat;},
+ heatLbl:{gas:"calefacción a gas",heatpump:"bomba de calor eléctrica",resistance:"resistencia eléctrica",dontknow:"calefacción desconocida"},
+ streams:{
+  harmo:{name:"Armonización de potencia",sub:"siempre incluida",how:function(p){return "Su tipo de instalación está fijado en <b>"+p+"%</b> de la factura. La cifra se calibra con resultados medidos en sitios instalados para algunos tipos y se estima para otros; los canales físicos son calor desperdiciado en su propio cableado y transformadores, picos de demanda más altos y recargos por factor de potencia donde se facturan.";},src:"Instalaciones medidas de Energy Plus · estimaciones donde se indica · IEEE 519"},
+  cool:{name:"Optimización de enfriamiento",sub:"controles, refrigerante, escalonamiento",how:function(hs,cs){return "La climatización es cerca del <b>"+hs+"%</b> de su factura (promedio DOE/CBECS para su tipo) y aproximadamente el <b>"+cs+"%</b> de eso es enfriamiento en su estado. Los estudios del DOE muestran ahorros del 15% al 55% del gasto de enfriamiento.";},src:"EIA CBECS 2018 · casos de retrofit del DOE"},
+  heat:{name:"Conversión de calefacción",sub:"bomba de calor",how:function(){return "Si calienta con electricidad, reemplazar resistencias con una bomba de calor COP-3 ahorra hasta el 70% del gasto de calefacción. Cuando el tipo es desconocido, acotamos: el piso asume que ya tiene bomba de calor, el techo asume resistencia.";},src:"Guía DOE · techo corregido, julio 2026"},
+  dem:{name:"Demanda pico",sub:"cargos por demanda",how:function(dp,anchored){return "Los cargos por demanda son "+(anchored?"<b>"+dp+"% de su factura (de su factura real)</b>":"un supuesto del <b>"+dp+"%</b> de su factura (rango típico 30 a 50%)")+". El piso recorta el 5% de eso; la opción de batería se limita al 50% de los cargos por demanda, en línea con resultados de la industria de 10 a 50%.";},src:"Resultados de la industria · límite corregido, julio 2026"},
+  lit:{name:"Iluminación exterior",sub:"solar + LED",how:function(f,c){return "La iluminación exterior para su tipo corre entre "+f+"% y "+c+"% de la factura. Las luminarias solares aisladas eliminan esa carga del medidor por completo.";},src:"Estimaciones por tipo de instalación"},
+  nego:{name:"Negociación de tarifa",sub:"mercado desregulado",how:function(){return "Su estado permite negociar la tarifa de suministro. Los contratos comerciales negociados suelen quedar 2.5% a 6% por debajo del precio por defecto. Apagado por defecto; actívelo si nunca ha licitado su tarifa.";},src:"Programas estatales de elección minorista"},
+  mot:{name:"Optimización de motores",sub:"arranques suaves + variadores",how:function(){return "Para instalaciones con muchos motores: una estimación conservadora de ahorros por arranque suave y control de variadores aplicada a la porción de demanda. Se documenta caso por caso en la revisión.";},src:"Estimación de ingeniería · confirmada en revisión"},
+  bat:{name:"Batería para picos",sub:"eleva el techo de demanda",how:function(){return "Agrega almacenamiento para recortar sus peores picos. Limitado al 50% de los cargos por demanda; la eliminación total no es realista.";},src:"Resultados de la industria, 10 a 50%"}
+ },
+ on:"sí",off:"no",totalLbl:"Rango anual · por tienda",
+ pct:function(a,b){return a+"% a "+b+"% de su factura anual";},
+ capNote:"Techo limitado al 45% de la factura: los flujos se superponen en el extremo superior, así que recortamos la suma en lugar de imprimir un número inverosímil.",
+ lblCount:"¿Cuántas tiendas opera?",countLbls:{"one":"1","2to4":"2–4","5to9":"5–9","10to19":"10–19","20plus":"20+"},
+ portfolio:function(lo,hi){return "En todo su portafolio: <b>"+lo+"</b> a <b>"+hi+"</b> al año, usando el menor número de sitios al menor ahorro por sitio para el piso.";},
+ fitEquip:"Mejor opción: programa a nivel de equipo. Por debajo de ~$1,500/mes por sitio, el programa llave en mano no cierra, pero el hardware de armonización sí.",
+ fitTurnkey:function(){return "Probablemente califica para el <b>programa llave en mano</b>: flujo de caja positivo desde el día uno, sin costo inicial.";},
+ fitWarm:function(n){return "Con su gasto, el programa llave en mano típicamente requiere "+n+"+ sitios; con menos, lo evaluamos caso por caso en la revisión.";},
+ lblHorizon:"Si las tarifas siguen subiendo",hz1l:"Este año",hz1s:"a tarifas de hoy",hz5l:"Total a 5 años",hz10l:"Total a 10 años",hzs:"acumulado, con escalación de tarifas",
+ escNote:function(rg,ab){return "Los totales asumen aumentos anuales promedio de "+rg+" (nivel "+ab+", historial EIA, revisado julio 2026). Los aumentos recientes a nivel nacional superan estos niveles, así que la proyección es conservadora.";},
+ be1v:"hasta 40%",be1l:"menos mantenimiento, medido en un sitio instalado (Gazelle Industries)",
+ be2v:"5–15 años",be2l:"vida útil adicional del equipo con energía limpia",
+ be3v:"30–40%",be3l:"del tiempo fuera de servicio se vincula a calidad de energía (estimaciones de la industria)",
+ sigH:"Misma lectura del medidor. Tienda distinta.",
+ sigP:"Cada compresor y rack de la tienda consume energía en pulsos irregulares que distorsionan la corriente en cada circuito. Parte de esa energía se convierte en calor desperdiciado en su cableado antes de enfriar nada, sus picos de demanda suben, y todo lo demás funciona caliente.",
+ sigClean:"Energía limpia",sigDirty:"Con distorsión",sigMeter1:"Medidor: 100 kWh",sigMeter2:"Medidor: 100 kWh",
+ sigSame:"= MISMA FACTURA · pero calor, picos más altos y fallas tempranas a la derecha",
+ hiddenLead:function(noun){return "Para su "+noun+", la segunda mitad de la historia es su equipo.";},
+ hiddenLbl:"Desperdiciado hoy por distorsión",
+ hiddenP:"Limpiarla es la palanca que siempre va incluida; las cifras se calibran con resultados medidos donde hemos instalado y se estiman en los demás tipos (ajustables arriba).",
+ costsH:"Lo que cuesta la falla temprana en una instalación como la suya",
+ costsLede:function(noun){return "Cuando la distorsión desgasta estos sistemas antes de tiempo, la exposición para un "+noun+" es así:";},
+ printBtn:"Imprimir el resumen",copyBtn:"Copiar enlace a esta estimación",copied:"Enlace copiado. Reabre esta estimación exacta.",
+ toBook:"Confirmarlo en una revisión de 22 minutos",
+ fine4:'Estimación ilustrativa a partir de sus datos. No es una cotización. Los flujos se estiman de forma independiente y pueden superponerse en el extremo superior, por lo que el techo es una cifra de "hasta". Los ahorros reales y los incentivos aplicables se confirman en la revisión, y el diagnóstico corre por nuestra cuenta. Supuestos revisados en julio de 2026. Nota: los datos de costos de equipo se muestran en inglés.',
+ kick5:"Los próximos 22 minutos",h5:"Convierta la estimación en su número.",
+ lede5:"La Revisión de Instalación de 22 Minutos es una llamada con un ingeniero, no una venta. Sus datos y esta estimación llegan con la reserva, así que la llamada empieza donde termina esta página.",
+ ex1:"Revisamos esta estimación línea por línea contra su factura y estructura tarifaria reales.",
+ ex2:"Sabrá qué palancas son reales para su edificio y cuáles no, con las cuentas a la vista.",
+ ex3:"Si se sostiene, definimos el camino sin costo inicial. Si no, usted se queda con el análisis.",
+ exBring:"Tenga a mano una factura eléctrica reciente. Es todo lo que necesita.",
+ bookBtn:"Elegir un horario",
+ fine5:"Sin compromiso. Energy Plus es un Socio Independiente de Soluciones Energéticas sin incentivo para inflar estas cifras.",
+ facNames:{office:"Oficinas",hotel:"Hotel",health:"Salud",cold:"Almacén frío",super:"Supermercado",retail:"Comercio",qsr:"Restaurante",cstore:"Tienda / gasolinera",whse:"Bodega",multi:"Multifamiliar",edu:"Educación",fitness:"Gimnasio",ind:"Industrial",datactr:"Centro de datos",research:"Investigación",mixed:"Mixto / otro"},
+ facNouns:{office:"edificio de oficinas",hotel:"propiedad hotelera",health:"instalación de salud",cold:"almacén frigorífico",super:"supermercado",retail:"espacio comercial",qsr:"restaurante de servicio rápido",cstore:"tienda de conveniencia",whse:"centro de distribución",multi:"propiedad multifamiliar",edu:"escuela",fitness:"gimnasio",ind:"planta de manufactura",datactr:"centro de datos",research:"campus de investigación",mixed:"propiedad de uso mixto"},
+ opTitle:"Ahorro anual estimado",opFor:"Preparado con sus datos en el estimador de Energy Plus",opStream:"Palanca",opRange:"Rango anual",opBasis:"Base",
+ opMeta:{fac:"Instalación",state:"Estado",spend:"Gasto anual",heat:"Calefacción",count:"Instalaciones"},opPerFac:"rango conservador · por tienda",
+ opNote:"Conservador por diseño: los pisos subestiman, los techos son cifras de 'hasta' y los flujos pueden superponerse en el extremo superior. El número verificado de la revisión debería superar esta estimación. No es una cotización.",
+ opCta:function(u){return "Reserve la revisión de 22 minutos: "+u;},
+ opSrc:"Fuentes: EPA ENERGY STAR (30% de desperdicio promedio) · EIA CBECS 2018 · casos DOE (enfriamiento 15–55%) · tarifas y escalación EIA · resultados de la industria (límite de batería 50%) · instalaciones medidas de Energy Plus. Supuestos revisados en julio de 2026."
+}};
+/* ---------------- app state ---------------- */
+var st={lang:"en",region:"",fac:FAC.filter(function(x){return x.k==="super";})[0],spendM:0,heat:null,countKey:"one",count:1,
+  tog:{cool:true,heat:true,dem:true,lit:true,nego:false,mot:false,bat:false},
+  adj:{share:null,harmo:null,cool:null,demP:null},screen:0,revealed:false};
+var $=function(id){return document.getElementById(id);};
+var T=function(){return STR[st.lang]||STR.en;};
+function fmt(n){return "$"+Math.round(n).toLocaleString("en-US");}
+function fmtK(n){n=Math.round(n);if(n>=1e6)return "$"+(Math.round(n/1e5)/10).toFixed(1).replace(/\.0$/,"")+"M";if(n>=1000)return "$"+Math.round(n/1000)+"K";return "$"+n;}
+function RNG(a,b){return fmt(a)+" – "+fmt(b);}
+var REDUCE=!!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+/* ---------------- item 16: event tracking ---------------- */
+function track(evt,data){
+  var e={t:Date.now(),evt:evt,data:data||{}};
+  try{
+    if(window.dataLayer&&window.dataLayer.push)window.dataLayer.push({event:"ep_calc_"+evt,ep:e.data});
+    var q=JSON.parse(localStorage.getItem("ep_events")||"[]");q.push(e);if(q.length>50)q=q.slice(-50);
+    localStorage.setItem("ep_events",JSON.stringify(q));
+  }catch(_e){}
+}
+/* ---------------- item 11: embed height ---------------- */
+function postHeight(){
+  if(window.parent===window)return;
+  try{window.parent.postMessage({type:"ep-embed-height",height:document.documentElement.scrollHeight},"*");}catch(_e){}
+}
+window.addEventListener("resize",postHeight);
+/* ---------------- item 2 + 15: deep links and memory ---------------- */
+function serialize(){
+  var p=new URLSearchParams();
+  if(st.region)p.set("s",STATE_ABBR[st.region]||st.region);
+  if(st.fac)p.set("f",st.fac.k);
+  if(st.spendM)p.set("m",String(st.spendM));
+  if(st.heat)p.set("h",st.heat);
+  if(st.countKey!=="one")p.set("n",st.countKey);
+  if(st.lang!=="en")p.set("l",st.lang);
+  return p;
+}
+function pushUrl(){
+  try{var q=serialize().toString();history.replaceState(null,"",q?("?"+q):location.pathname);}catch(_e){}
+  try{localStorage.setItem("ep_calc_v1",JSON.stringify({q:serialize().toString(),t:Date.now()}));}catch(_e){}
+}
+function abbrToState(ab){for(var k in STATE_ABBR)if(STATE_ABBR[k]===ab)return k;return "";}
+function restore(q){
+  var p=new URLSearchParams(q);
+  if(p.get("l")==="es")st.lang="es";
+  var s=p.get("s");if(s){var full=abbrToState(s)||s;if(STATE_COOL[full]!=null)st.region=full;}
+  st.fac=FAC.filter(function(x){return x.k==="super";})[0];
+  var m=parseFloat(p.get("m")||"0");if(m>0)st.spendM=m;
+  var h=p.get("h");if(h&&["gas","heatpump","resistance","dontknow"].indexOf(h)>=0)st.heat=h;
+  var n=p.get("n");if(n&&T().countLbls[n]){st.countKey=n;st.count=(COUNTS.filter(function(c){return c[0]===n;})[0]||[0,1])[1];}
+}
+function resumeSaved(){
+  try{var saved=JSON.parse(localStorage.getItem("ep_calc_v1")||"null");
+    if(saved&&saved.q){restore(saved.q);syncUiFromState();var target=st.spendM&&st.heat?4:(st.region?3:1);go(target);track("resume",{});}
+  }catch(_e){}
+}
+/* ---------------- engine (corrected, July 2026) ---------------- */
+function coolShare(){
+  var sc=STATE_COOL[st.region]!=null?STATE_COOL[st.region]:50;
+  var cm=st.fac?st.fac.coolmin:0;
+  var v=st.adj.cool!=null?st.adj.cool:Math.max(sc,cm);
+  return v/100;
+}
+function spendYr(){return st.spendM*12;}
+function demPortion(){
+  if(st.adj.demP!=null)return st.adj.demP/100;
+  return 0.40;
+}
+function compute(){
+  var spend=spendYr();if(!spend||!st.fac)return null;
+  var share=(st.adj.share!=null?st.adj.share/100:st.fac.share);
+  var hr=(st.adj.harmo!=null?st.adj.harmo/100:st.fac.harmo);
+  var harmo=hr*spend;
+  var H=share*spend;
+  var cs=coolShare();
+  var coolEff=(st.heat==="gas")?1.0:cs;
+  var C=H*coolEff,He=H*(1-coolEff);
+  var coolFloor=st.tog.cool?C*COOL_FLOOR:0,coolCeil=st.tog.cool?C*COOL_CEIL:0;
+  var heatFloor=0,heatCeil=0;
+  if(st.tog.heat&&st.heat!=="gas"){
+    if(st.heat==="dontknow"||st.heat==null){heatFloor=He*HEATC.heatpump;heatCeil=He*HEATC.resistance;}
+    else if(st.heat==="resistance"){heatCeil=He*HEATC.resistance;}
+    else{heatCeil=He*HEATC.heatpump;}
+  }
+  var demPool=demPortion()*spend;
+  var demFloor=st.tog.dem?0.05*demPool:0;
+  var demCeil=st.tog.dem?(st.tog.bat?0.50*demPool:demFloor):0;
+  var od=OUTDOOR[st.fac.k]||{f:0,c:0};
+  var litFloor=st.tog.lit?od.f*spend:0,litCeil=st.tog.lit?od.c*spend:0;
+  var negoFloor=st.tog.nego?0.025*spend:0,negoCeil=st.tog.nego?0.06*spend:0;
+  var ms=(st.tog.mot&&MOTOR[st.fac.k])?MOTOR[st.fac.k].ms:0;
+  var motFloor=ms*demPool*0.20,motCeil=ms*demPool*0.50;
+  var combDemCeil=Math.min(demCeil+motCeil,demPool);
+  var floor=harmo+coolFloor+heatFloor+demFloor+motFloor+litFloor+negoFloor;
+  var ceil=harmo+coolCeil+heatCeil+combDemCeil+litCeil+negoCeil;
+  var capped=false;
+  if(ceil>CEIL_CAP*spend){ceil=CEIL_CAP*spend;capped=true;}
+  if(floor>ceil)floor=ceil;
+  return {spend:spend,harmo:harmo,cool:[coolFloor,coolCeil],heat:[heatFloor,heatCeil],dem:[demFloor,demCeil],
+    lit:[litFloor,litCeil],nego:[negoFloor,negoCeil],mot:[motFloor,motCeil],floor:floor,ceil:ceil,capped:capped,
+    share:share,hr:hr,cs:cs,demP:demPortion()};
+}
+function facRangePct(f,region){
+  /* item 7: dynamic insight range replaces stale static INSIGHTS ranges */
+  var keep={fac:st.fac,spendM:st.spendM,heat:st.heat};
+  st.fac=f;if(!st.spendM)st.spendM=10000;var hadHeat=st.heat;if(!st.heat)st.heat="dontknow";
+  var r=compute();
+  var lo=Math.round(r.floor/r.spend*100),hi=Math.round(r.ceil/r.spend*100);
+  st.fac=keep.fac;st.spendM=keep.spendM;st.heat=hadHeat;
+  return [lo,hi];
+}
+function escInfo(){var t=ESC_TIER[st.region]||3;return {tier:t,data:ESC_DATA[t]};}
+function escalFactor(rate,y){return (Math.pow(1+rate,y)-1)/rate;}
+function spendTier(m){if(m<1500)return{key:"under1500",min:Infinity};if(m<2000)return{key:"t15",min:20};if(m<3500)return{key:"t20",min:10};if(m<5000)return{key:"t35",min:5};return{key:"t50",min:1};}
+/* ---------------- i18n applier ---------------- */
+function applyLang(){
+  var S=T();
+  document.documentElement.lang=st.lang;
+  $("lang-en").classList.toggle("on",st.lang==="en");
+  $("lang-es").classList.toggle("on",st.lang==="es");
+  document.querySelectorAll("[data-t]").forEach(function(el){
+    var k=el.getAttribute("data-t");var v=S[k];
+    if(typeof v==="string")el.innerHTML=v;
+  });
+  buildBands();buildHeat();buildCounts();
+  if(st.region)paintStateFactoid();
+  if(st.spendM)paintBenchmark();
+  if(st.screen===4)paintResults(false);
+}
+function setLang(l){st.lang=l;applyLang();pushUrl();track("lang",{l:l});}
+/* ---------------- router ---------------- */
+function go(n){
+  st.screen=n;
+  document.querySelectorAll(".screen").forEach(function(s){s.classList.toggle("active",+s.dataset.s===n);});
+  var dots=$("steps").children,si=n>2?n-1:n;for(var i=0;i<dots.length;i++)dots[i].classList.toggle("on",i<=si);
+  var head=document.querySelector('.screen[data-s="'+n+'"] [tabindex="-1"]');
+  if(head)head.focus({preventScroll:true});
+  window.scrollTo({top:0,behavior:REDUCE?"auto":"smooth"});
+  if(n===4){st.revealed=false;paintResults(true);}
+  if(n===5)updateBookLink();
+  pushUrl();postHeight();track("screen",{n:n});
+}
+/* ---------------- screen 1: state ---------------- */
+function buildStates(){
+  var sel=$("region");sel.innerHTML="<option value=''></option>";
+  Object.keys(STATE_COOL).sort().forEach(function(n){
+    var o=document.createElement("option");o.value=n;o.textContent=n;sel.appendChild(o);
+  });
+}
+function pickState(v){
+  st.region=v;$("toFac").disabled=!v;
+  paintStateFactoid();pushUrl();track("state",{s:v});
+}
+function paintStateFactoid(){
+  var f=$("state-factoid");if(!st.region){f.style.display="none";return;}
+  var e=escInfo();
+  f.innerHTML=T().stateFact(st.region,(STATE_RATE[st.region]||13).toFixed(1),e.data.range,!!DEREG[st.region]);
+  f.style.display="";
+  if($("region").value!==st.region)$("region").value=st.region;
+}
+/* ---------------- screen 2: facility ---------------- */
+function buildFacGrid(){
+  var g=$("fac-grid");g.innerHTML="";
+  FAC.forEach(function(f){
+    var b=document.createElement("button");b.type="button";b.className="opt"+(st.fac&&st.fac.k===f.k?" sel":"");
+    b.innerHTML="<b>"+T().facNames[f.k]+"</b><span>"+T().facHv(Math.round(f.share*100))+"</span>";
+    b.onclick=function(){pickFac(f,b);};
+    g.appendChild(b);
+  });
+}
+function pickFac(f,btn){
+  var changed=!st.fac||st.fac.k!==f.k;
+  st.fac=f;st.adj={share:null,harmo:null,cool:null,demP:null};
+  if(changed){st.spendM=0;checkS3();}
+  buildBands();paintBenchmark();
+  document.querySelectorAll("#fac-grid .opt").forEach(function(o){o.classList.remove("sel");});
+  if(btn)btn.classList.add("sel");
+  var rng=facRangePct(f);
+  var line=$("fac-insight");
+  line.innerHTML=T().facInsight(T().facNouns[f.k],rng[0],rng[1]);
+  line.style.display="";
+  $("toSpend").disabled=false;
+  pushUrl();track("facility",{f:f.k});
+}
+/* ---------------- screen 3: spend, bill, heat, benchmark ---------------- */
+function fmtB(n){return n>=10000?fmtK(n):"$"+Math.round(n).toLocaleString("en-US");}
+/* dynamic bands: log-spaced between the facility type's monthly bounds, snapped to clean numbers */
+function niceNum(v){
+  var exp=Math.pow(10,Math.floor(Math.log(v)/Math.LN10));
+  var m=v/exp,steps=[1,1.5,2,2.5,3,4,5,6,8,10];
+  var best=steps[0];steps.forEach(function(s){if(Math.abs(s-m)<Math.abs(best-m))best=s;});
+  return best*exp;
+}
+function bandEdges(f){
+  var n=6,edges=[];
+  for(var i=1;i<n;i++)edges.push(niceNum(f.mLo*Math.pow(f.mHi/f.mLo,i/n)));
+  return edges.filter(function(v,i,a){return i===0||v>a[i-1];});
+}
+function buildBands(){
+  var g=$("band-grid");g.innerHTML="";
+  if(!st.fac)return;
+  var edges=bandEdges(st.fac),items=[];
+  items.push({lbl:T().bandUnder(fmtB(edges[0])),mid:edges[0]*0.7,lo:0,hi:edges[0]});
+  for(var i=0;i<edges.length-1;i++)items.push({lbl:fmtB(edges[i])+" – "+fmtB(edges[i+1])+"/mo",mid:Math.sqrt(edges[i]*edges[i+1]),lo:edges[i],hi:edges[i+1]});
+  items.push({lbl:T().bandOver(fmtB(edges[edges.length-1])),mid:edges[edges.length-1]*1.6,lo:edges[edges.length-1],hi:Infinity});
+  items.forEach(function(it){
+    var sel=st.spendM>0&&st.spendM>=it.lo&&st.spendM<it.hi;
+    var b=document.createElement("button");b.type="button";b.className="opt"+(sel?" sel":"");
+    b.innerHTML="<b>"+it.lbl+"</b>";
+    b.onclick=function(){pickBand(it.mid,b);};
+    g.appendChild(b);
+  });
+}
+function pickBand(mid,btn){
+  st.spendM=Math.round(mid);
+  document.querySelectorAll("#band-grid .opt").forEach(function(o){o.classList.remove("sel");});
+  if(btn)btn.classList.add("sel");
+  paintBenchmark();checkS3();pushUrl();track("band",{m:st.spendM});
+}
+function paintBenchmark(){
+  var b=$("benchmark");
+  if(!st.spendM||!st.fac||!st.region){b.style.display="none";return;}
+  var rate=STATE_RATE[st.region]||13;
+  var kwh=spendYr()/(rate/100);
+  var sq=Math.round(spendYr()/st.fac.sq/500)*500;
+  b.innerHTML=T().bench(Math.round(kwh).toLocaleString("en-US"),sq.toLocaleString("en-US"),STATE_ABBR[st.region]||st.region,rate.toFixed(1));
+  b.style.display="";
+}
+function buildHeat(){
+  var g=$("heat-chips");g.innerHTML="";
+  T().heatOpts.forEach(function(o){
+    var b=document.createElement("button");b.type="button";b.className="chip"+(st.heat===o[0]?" sel":"");b.textContent=o[1];
+    b.onclick=function(){st.heat=o[0];
+      document.querySelectorAll("#heat-chips .chip").forEach(function(c){c.classList.remove("sel");});
+      b.classList.add("sel");checkS3();pushUrl();track("heat",{h:o[0]});};
+    g.appendChild(b);
+  });
+}
+function checkS3(){$("toResults").disabled=!(st.fac&&st.spendM>0&&st.heat);}
+/* ---------------- screen 4: results ---------------- */
+var STREAM_ORDER=["harmo","cool","heat","dem","lit","nego","mot","bat"];
+function streamVisible(k){
+  if(k==="nego")return !!DEREG[st.region];
+  if(k==="mot")return !!MOTOR[st.fac.k]&&spendYr()>=150000;
+  if(k==="heat")return st.heat!=="gas";
+  return true;
+}
+function streamOn(k){
+  if(k==="harmo")return true;
+  if(k==="bat")return st.tog.bat;
+  return !!st.tog[k];
+}
+function streamRange(r,k){
+  if(k==="harmo")return [r.harmo,r.harmo];
+  if(k==="bat")return null;
+  return r[k];
+}
+function toggleStream(k){
+  if(k==="harmo")return;
+  var map={cool:"cool",heat:"heat",dem:"dem",lit:"lit",nego:"nego",mot:"mot",bat:"bat"};
+  st.tog[map[k]]=!st.tog[map[k]];
+  paintResults(false);track("toggle",{k:k,on:st.tog[map[k]]});
+}
+var expanded={};
+function toggleHow(k){expanded[k]=!expanded[k];paintResults(false);track("how",{k:k});}
+function howText(k,r){
+  var S=T().streams[k];
+  if(k==="harmo")return S.how(Math.round(r.hr*100));
+  if(k==="cool")return S.how(Math.round(r.share*100),Math.round(r.cs*100));
+  if(k==="dem")return S.how(Math.round(r.demP*100),false);
+  if(k==="lit"){var od=OUTDOOR[st.fac.k]||{f:0,c:0};return S.how(Math.round(od.f*100),Math.round(od.c*100));}
+  return S.how();
+}
+function adjField(k){
+  /* item 3: inline editable assumption per stream */
+  if(k==="harmo")return {get:function(){return Math.round((st.adj.harmo!=null?st.adj.harmo:st.fac.harmo*100));},set:function(v){st.adj.harmo=v;},u:"% of bill"};
+  if(k==="cool")return {get:function(){return Math.round((st.adj.share!=null?st.adj.share:st.fac.share*100));},set:function(v){st.adj.share=v;},u:"% HVAC share"};
+  if(k==="dem")return {get:function(){return Math.round(demPortion()*100);},set:function(v){st.adj.demP=v;},u:"% of bill"};
+  return null;
+}
+function onAdj(k,el){
+  var f=adjField(k);if(!f)return;
+  var v=parseFloat(el.value);
+  if(!isNaN(v)&&v>=0&&v<=95){f.set(v);paintResults(false);track("adjust",{k:k,v:v});}
+}
+function paintResults(animate){
+  var r=compute();if(!r)return;
+  var S=T();
+  $("assump").textContent=S.assump(S.facNames[st.fac.k],st.region,fmt(r.spend),
+    (st.heat==="gas"?"100% cooling":Math.round(r.cs*100)+"% / "+Math.round((1-r.cs)*100)+"%"),S.heatLbl[st.heat||"dontknow"]);
+  /* ledger */
+  var L=$("ledger");var h="";
+  STREAM_ORDER.forEach(function(k){
+    if(!streamVisible(k))return;
+    var on=streamOn(k),rng=streamRange(r,k),sd=S.streams[k];
+    var val;
+    if(k==="bat")val="";
+    else if(!on)val=S.off;
+    else if(k==="harmo")val=fmt(r.harmo);
+    else if(rng[0]===rng[1])val=fmt(rng[1]);
+    else if(rng[1]>0&&rng[0]===0)val=(st.lang==="es"?"hasta ":"up to ")+fmt(rng[1]);
+    else val=RNG(rng[0],rng[1]);
+    var f=adjField(k);
+    h+='<div class="lrow'+(on?"":" off")+(expanded[k]?" expanded":"")+'">'
+      +'<div class="lrow-main"><div class="lrow-name"><b>'+sd.name+'</b><span class="sub">'+sd.sub+'</span></div>'
+      +'<div class="lrow-val">'+val+'</div>'
+      +'<div class="lrow-ctl">'
+      +(k==="harmo"?'':'<button class="tgl'+(on?" on":"")+'" role="switch" aria-checked="'+on+'" aria-label="'+sd.name+'" onclick="toggleStream(\''+k+'\')"></button>')
+      +'<button class="how-btn" aria-expanded="'+(!!expanded[k])+'" aria-label="How: '+sd.name+'" onclick="toggleHow(\''+k+'\')">›</button>'
+      +'</div></div>'
+      +'<div class="how">'+howText(k,r)
+      +(f?'<span class="adj"><input type="number" value="'+f.get()+'" min="0" max="95" onchange="onAdj(\''+k+'\',this)" aria-label="'+sd.name+' assumption"><span class="u">'+f.u+'</span></span>':'')
+      +'<span class="src">'+sd.src+'</span></div></div>';
+  });
+  h+='<div class="ltotal"><span class="ltotal-lbl">'+S.totalLbl+'</span><span class="ltotal-v" id="total-v">'+RNG(r.floor,r.ceil)+'</span>'
+    +'<span class="lpct">'+S.pct((r.floor/r.spend*100).toFixed(1),(r.ceil/r.spend*100).toFixed(1))+'</span></div>';
+  if(r.capped)h+='<div class="cap-note">'+S.capNote+'</div>';
+  L.innerHTML=h;
+  $("live-total").textContent=S.totalLbl+": "+RNG(r.floor,r.ceil);
+  /* item 6: orchestrated count-up on first reveal */
+  if(animate&&!REDUCE&&!st.revealed){
+    st.revealed=true;
+    var tv=$("total-v"),t0=performance.now(),dur=900;
+    (function step(t){
+      var p=Math.min((t-t0)/dur,1),e=1-Math.pow(1-p,4);
+      tv.textContent=RNG(r.floor*e,r.ceil*e);
+      if(p<1)requestAnimationFrame(step);else tv.textContent=RNG(r.floor,r.ceil);
+    })(t0);
+  }
+  /* portfolio + fit */
+  paintPortfolio(r);
+  /* horizon */
+  var e=escInfo(),f5=escalFactor(e.data.rate,5),f10=escalFactor(e.data.rate,10);
+  var lo=st.count>1?r.floor*st.count:r.floor;
+  var hiC=st.count>1?r.ceil*(COUNTS.filter(function(c){return c[0]===st.countKey;})[0]||[0,1,1])[2]:r.ceil;
+  $("hz1").textContent=fmtK(lo)+" – "+fmtK(hiC);
+  $("hz5").textContent=fmtK(lo*f5)+" – "+fmtK(hiC*f5);
+  $("hz10").textContent=fmtK(lo*f10)+" – "+fmtK(hiC*f10);
+  $("esc-note").textContent=S.escNote(e.data.range,STATE_ABBR[st.region]||st.region);
+  /* hidden box + equipment + costs */
+  $("hidden-lead").textContent=S.hiddenLead(S.facNouns[st.fac.k]);
+  $("v-harmo").textContent=fmt(r.harmo)+"/yr";
+  var eq=$("eqchips");eq.innerHTML="";(EQUIP[st.fac.k]||[]).forEach(function(n){var s=document.createElement("span");s.className="eqchip";s.textContent=n;eq.appendChild(s);});
+  $("costs-lede").textContent=S.costsLede(S.facNouns[st.fac.k]);
+  $("costlist").innerHTML=(COSTS[st.fac.k]||[]).map(function(x){return "<li>"+x+"</li>";}).join("");
+  buildOnePager(r);
+  postHeight();
+}
+function buildCounts(){
+  var g=$("count-chips");g.innerHTML="";
+  COUNTS.forEach(function(c){
+    var b=document.createElement("button");b.type="button";b.className="chip"+(st.countKey===c[0]?" sel":"");
+    b.textContent=T().countLbls[c[0]];
+    b.onclick=function(){st.countKey=c[0];st.count=c[1];
+      document.querySelectorAll("#count-chips .chip").forEach(function(x){x.classList.remove("sel");});
+      b.classList.add("sel");paintResults(false);pushUrl();track("count",{n:c[0]});};
+    g.appendChild(b);
+  });
+}
+function paintPortfolio(r){
+  var S=T(),line=$("fit-line"),tier=spendTier(st.spendM),html="";
+  if(st.count>1){
+    var hi=(COUNTS.filter(function(c){return c[0]===st.countKey;})[0]||[0,1,1])[2];
+    html+=S.portfolio(fmt(r.floor*st.count),fmt(r.ceil*hi))+"<br>";
+  }
+  if(tier.key==="under1500")html+=S.fitEquip;
+  else if(st.count>=tier.min)html+=S.fitTurnkey();
+  else html+=S.fitWarm(tier.min);
+  line.innerHTML=html;
+}
+/* ---------------- item 1: one-pager ---------------- */
+function buildOnePager(r){
+  var S=T(),rows="";
+  STREAM_ORDER.forEach(function(k){
+    if(!streamVisible(k)||!streamOn(k)||k==="bat")return;
+    var rng=streamRange(r,k),sd=S.streams[k];
+    var val=k==="harmo"?fmt(r.harmo):(rng[0]===rng[1]?fmt(rng[1]):(rng[0]===0?(st.lang==="es"?"hasta ":"up to ")+fmt(rng[1]):RNG(rng[0],rng[1])));
+    rows+="<tr><td>"+sd.name+"<span class='basis'>"+sd.src+"</span></td><td class='num'>"+val+"</td></tr>";
+  });
+  var e=escInfo(),f5=escalFactor(e.data.rate,5),f10=escalFactor(e.data.rate,10);
+  var lo=st.count>1?r.floor*st.count:r.floor;
+  var hiC=st.count>1?r.ceil*(COUNTS.filter(function(c){return c[0]===st.countKey;})[0]||[0,1,1])[2]:r.ceil;
+  var dateStr=new Date().toLocaleDateString(st.lang==="es"?"es-MX":"en-US",{year:"numeric",month:"long",day:"numeric"});
+  var hzRows="<tr><td>"+S.hz1l+"<span class='basis'>"+S.hz1s+"</span></td><td class='num'>"+fmtK(lo)+" – "+fmtK(hiC)+"</td></tr>"
+    +"<tr><td>"+S.hz5l+"<span class='basis'>"+S.hzs+"</span></td><td class='num'>"+fmtK(lo*f5)+" – "+fmtK(hiC*f5)+"</td></tr>"
+    +"<tr><td>"+S.hz10l+"<span class='basis'>"+S.hzs+"</span></td><td class='num'>"+fmtK(lo*f10)+" – "+fmtK(hiC*f10)+"</td></tr>";
+  $("onepager").innerHTML=
+    "<div class='op-band'><span class='b1'>Energy Plus</span><span class='b2'>"+S.opFor+" · "+dateStr+"</span></div>"
+    +"<div class='op-hero'><div class='oph-lbl'>"+S.opTitle+"</div>"
+    +"<div class='oph-range'>"+RNG(r.floor,r.ceil)+" <small>/yr</small></div>"
+    +"<div class='oph-sub'>"+S.pct((r.floor/r.spend*100).toFixed(1),(r.ceil/r.spend*100).toFixed(1))+" · "+S.opPerFac+"</div></div>"
+    +"<div class='op-meta'>"
+    +"<div><b>"+S.opMeta.fac+"</b>"+S.facNames[st.fac.k]+"</div>"
+    +"<div><b>"+S.opMeta.state+"</b>"+st.region+"</div>"
+    +"<div><b>"+S.opMeta.spend+"</b>"+fmt(r.spend)+"</div>"
+    +"<div><b>"+S.opMeta.heat+"</b>"+S.heatLbl[st.heat||"dontknow"]+"</div>"
+    +"<div><b>"+S.opMeta.count+"</b>"+S.countLbls[st.countKey]+"</div>"
+    +"</div>"
+    +"<div class='op-cols'>"
+    +"<div class='c1'><table><tr><th>"+S.opStream+"</th><th style='text-align:right'>"+S.opRange+"</th></tr>"+rows+"</table></div>"
+    +"<div class='c2'><p class='op-hz-cap'>"+S.lblHorizon+"</p><table>"+hzRows+"</table>"
+    +"<div class='op-note'>"+S.opNote+"</div></div>"
+    +"</div>"
+    +"<div class='op-cta'>"+S.opCta("").replace(/:\s*$/,"")+"<small>"+bookUrl().split("?")[0]+"</small></div>"
+    +"<div class='op-src'>"+S.opSrc+"</div>";
+}
+function printOnePager(){track("print",{});window.print();}
+/* ---------------- item 2: copy link ---------------- */
+function copyLink(){
+  var url=location.origin+location.pathname+"?"+serialize().toString();
+  var done=function(){var t=$("toast");t.textContent=T().copied;t.classList.add("show");setTimeout(function(){t.classList.remove("show");},2600);};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(done,done);
+  else done();
+  track("copy_link",{});
+}
+/* ---------------- item 12: booking ---------------- */
+function bookUrl(){
+  var r=compute();if(!r)return "https://cal.com/dan-knows-a-gut/15min";
+  var notes=["Energy Plus estimator submission",
+    "Facility: "+T().facNames[st.fac.k],"State: "+st.region,
+    "Spend/facility: "+fmt(st.spendM)+"/mo ("+fmt(r.spend)+"/yr)",
+    "Heating: "+T().heatLbl[st.heat||"dontknow"],
+    "Est. annual range/facility: "+RNG(r.floor,r.ceil)+(r.capped?" (ceiling capped)":""),
+    "Facilities: "+T().countLbls[st.countKey],
+    "Deep link: "+location.origin+location.pathname+"?"+serialize().toString()].join("\n");
+  return "https://cal.com/dan-knows-a-gut/15min?notes="+encodeURIComponent(notes);
+}
+function updateBookLink(){$("book-link").href=bookUrl();track("book_view",{});}
+/* ---------------- boot ---------------- */
+function syncUiFromState(){
+  applyLang();
+  if(st.region){$("region").value=st.region;$("toFac").disabled=false;paintStateFactoid();}
+  buildBands();
+  if(st.spendM)paintBenchmark();
+  checkS3();
+}
+(function boot(){
+  var steps=$("steps");for(var i=0;i<5;i++){var d=document.createElement("i");d.className="dot"+(i===0?" on":"");steps.appendChild(d);}
+  buildStates();
+  var q=location.search.replace(/^\?/,"");
+  if(q){restore(q);syncUiFromState();
+    if(st.spendM&&st.heat&&st.region)go(4);
+    else if(st.region)go(3);else go(1);
+  }else{
+    applyLang();
+    try{var saved=JSON.parse(localStorage.getItem("ep_calc_v1")||"null");
+      if(saved&&saved.q&&saved.q.length>4){
+        $("resume-txt").textContent=T().resumeTxt(new Date(saved.t).toLocaleDateString(st.lang==="es"?"es-MX":"en-US"));
+        $("resume").classList.add("show");
+      }}catch(_e){}
+  }
+  postHeight();track("load",{embedded:window.parent!==window});
+})();
+</script>
+</body>
+</html>
