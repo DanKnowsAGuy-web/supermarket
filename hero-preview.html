@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hero color-scrub preview — Energy Plus Supermarket</title>
+<title>Hero pinned scrollytelling preview — Energy Plus Supermarket</title>
 <meta name="robots" content="noindex">
 <meta name="color-scheme" content="light">
 <link rel="stylesheet" href="assets/fonts/report-fonts.css">
@@ -11,27 +11,54 @@
 <style>
   .previewnote{position:fixed;z-index:99;left:50%;top:12px;transform:translateX(-50%);
     background:oklch(0.17 0.005 270);color:#fff;font:500 12px/1.4 "Spline Sans Mono",monospace;
-    letter-spacing:.03em;padding:7px 14px;border-radius:5px;box-shadow:0 8px 24px -8px rgba(0,0,0,.5);opacity:.94}
+    letter-spacing:.03em;padding:7px 14px;border-radius:5px;box-shadow:0 8px 24px -8px rgba(0,0,0,.5);opacity:.94;text-align:center;max-width:92vw}
   .previewnote b{color:oklch(0.82 0.15 80)}
 
-  /* ---- the color-scrub: grayscale + dim at the top, lights up to vibrant color
-          as you scroll past the hero. Driven by --p (0..1) set on scroll. ---- */
+  /* ---- the pinned scrolly stage ---- */
+  .hero-scrolly{ position:relative; height:230vh; }              /* the scroll runway */
+  .hero{ position:sticky; top:0; height:100svh; min-height:0; }  /* pins while the runway scrolls */
+
+  /* one progress value --p (0..1, set on the runway) drives everything.
+     --rev = the color/brightness reveal, complete by p=0.55 */
+  .hero{ --rev: clamp(0, calc(var(--p,0)/0.55), 1); }
   .hero .hero__media img{
     filter:
-      grayscale(calc(1 - var(--p,0)))
-      saturate(calc(1 + 0.35*var(--p,0)))
+      grayscale(calc(1 - var(--rev)))
+      saturate(calc(1 + 0.35*var(--rev)))
       contrast(1.05)
-      brightness(calc(0.55 + 0.30*var(--p,0)));
-    transition:filter 120ms linear;
+      brightness(calc(0.55 + 0.30*var(--rev)));
   }
-  .hero .hero__scrim{ opacity:calc(1 - 0.32*var(--p,0)); transition:opacity 120ms linear; }
+  .hero .hero__scrim{ opacity:calc(1 - 0.32*var(--rev)); }
 
-  @media (prefers-reduced-motion: reduce){
-    .hero .hero__media img{ filter:grayscale(1) contrast(1.05) brightness(0.55); transition:none; }
-    .hero .hero__scrim{ opacity:1; transition:none; }
+  /* the pen marks draw on with scroll, staggered by their --d (0,1,2).
+     Each starts at 0.10 + d*0.14 and draws over 0.16 of progress. */
+  .hero .bill .mk{
+    stroke-dasharray:1;
+    --s: calc(0.10 + var(--d) * 0.14);
+    stroke-dashoffset: clamp(0, calc(1 - (var(--p,0) - var(--s)) / 0.16), 1);
+  }
+  .hero .bill .mk-t{
+    --s: calc(0.17 + var(--d) * 0.14);
+    opacity: clamp(0, calc((var(--p,0) - var(--s)) / 0.10), 1);
+  }
+  /* the bill itself just sits; no load animation competing */
+  .hero .bill svg{ animation:none; }
+
+  /* scroll cue while pinned, fades as you engage */
+  .scrollcue{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:3;
+    font:500 11px/1 "Spline Sans Mono",monospace;letter-spacing:.14em;text-transform:uppercase;
+    color:oklch(0.8 0.006 260);opacity:calc(1 - var(--p,0)*3);pointer-events:none;display:flex;gap:.5rem;align-items:center}
+  .scrollcue span{width:1px;height:22px;background:currentColor;display:inline-block;opacity:.6}
+
+  /* fallback: no pin on small screens or reduced motion — show the resting frame */
+  @media (max-width:979px), (prefers-reduced-motion: reduce){
+    .hero-scrolly{ height:auto; }
+    .hero{ position:static; height:auto; min-height:92svh; --rev:0; }
+    .hero .bill .mk{ stroke-dashoffset:0; }
+    .hero .bill .mk-t{ opacity:1; }
+    .scrollcue{ display:none; }
   }
 
-  /* a stand-in for "the page continues below" so there is room to scroll */
   .after{background:var(--paper);color:var(--body-c);padding:14vh 0;border-top:2px solid var(--ink);}
   .after .wrap{max-width:47rem;}
   .after h2{font-family:var(--font-sans);font-weight:800;font-size:var(--step-3);color:var(--ink);letter-spacing:-.01em;}
@@ -40,7 +67,7 @@
 </style>
 </head>
 <body>
-<p class="previewnote"><b>PREVIEW</b> · Hero color-scrub — scroll down slowly. Not the live page.</p>
+<p class="previewnote"><b>PREVIEW</b> · Pinned hero — scroll slowly: it holds, annotations draw on + color fills in, then it releases. Not the live page.</p>
 
 <header class="head" id="head">
   <div class="wrap head__in">
@@ -53,75 +80,78 @@
 </header>
 
 <main id="main">
-  <section class="hero" id="top" aria-labelledby="hero-h">
-    <div class="hero__media" aria-hidden="true">
-      <img src="assets/img/hero-store-color.jpg" alt="" loading="eager" fetchpriority="high">
-      <div class="hero__scrim"></div>
-    </div>
-    <div class="wrap hero__in hero__grid">
-      <div class="hero__copy">
-        <h1 id="hero-h">Stop paying for refrigeration that isn't cooling anything.</h1>
-        <p class="hero__lede">Refrigeration is the single largest load in your stores, and it never clocks out. We find the waste, prove the savings on your own equipment, and install nothing until the number is real.</p>
-        <div class="cta" data-cta>
-          <button type="button" class="btn btn--lg" data-book>Book the 15-minute fit call</button>
-          <button type="button" class="textlink js-sms-toggle" aria-expanded="false">Text Dan directly</button>
-        </div>
+  <div class="hero-scrolly" id="scrolly">
+    <section class="hero" id="top" aria-labelledby="hero-h">
+      <div class="hero__media" aria-hidden="true">
+        <img src="assets/img/hero-store-color.jpg" alt="" loading="eager" fetchpriority="high">
+        <div class="hero__scrim"></div>
       </div>
-      <figure class="bill">
-        <svg viewBox="0 0 460 592" role="img" aria-labelledby="bill-t">
-          <title id="bill-t">One supermarket's monthly electric bill, marked up the way we read it.</title>
-          <rect class="paper" x="14" y="8" width="432" height="576"/>
-          <text class="bt" x="40" y="56">COMMERCIAL ELECTRIC SERVICE</text>
-          <text class="meta" x="40" y="74">STATEMENT OF ACCOUNT</text>
-          <rect class="tag" x="344" y="40" width="76" height="22"/>
-          <text class="meta" x="382" y="54.5" text-anchor="middle">SPECIMEN</text>
-          <line class="rule" x1="40" y1="92" x2="420" y2="92"/>
-          <text class="meta" x="40" y="114">ACCOUNT &middot;&middot;&middot;&middot;0146 &middot; STORE 114</text>
-          <text class="meta" x="286" y="114">RATE &middot; LGS-2</text>
-          <text class="meta" x="40" y="132">PERIOD &middot; JUL 01&ndash;JUL 31</text>
-          <text class="meta" x="286" y="132">METER &middot; 4K-20881</text>
-          <line class="rule" x1="40" y1="150" x2="420" y2="150"/>
-          <text class="row" x="40" y="180">Customer charge</text>
-          <text class="amt" x="420" y="180" text-anchor="end">88.00</text>
-          <text class="row" x="40" y="212">Energy charge &middot; 214,680 kWh</text>
-          <text class="amt" x="420" y="212" text-anchor="end">18,033.12</text>
-          <text class="row" x="40" y="268">Fuel cost adjustment</text>
-          <text class="amt" x="420" y="268" text-anchor="end">1,499.84</text>
-          <text class="row" x="40" y="300">Demand charge &middot; 486 kW</text>
-          <text class="amt" x="420" y="300" text-anchor="end">8,942.40</text>
-          <text class="row" x="40" y="360">Power factor adjustment</text>
-          <text class="amt" x="420" y="360" text-anchor="end">366.20</text>
-          <text class="row" x="40" y="392">Taxes and riders</text>
-          <text class="amt" x="420" y="392" text-anchor="end">2,015.66</text>
-          <line class="rule rule--ink" x1="40" y1="416" x2="420" y2="416"/>
-          <text class="bt" x="40" y="448">TOTAL DUE</text>
-          <text class="amt amt--total" x="420" y="449" text-anchor="end">$30,945.22</text>
-          <line class="rule" x1="40" y1="472" x2="420" y2="472"/>
-          <text class="meta" x="40" y="496">INTERVAL DATA ON FILE &middot; 2,976 READINGS &middot; 15-MIN</text>
-          <rect class="fine" x="40" y="570" width="196" height="3"/>
-          <path class="mk" pathLength="1" style="--d:0" d="M336 221 C 358 226, 398 223, 423 219"/>
-          <path class="mk" pathLength="1" style="--d:0" d="M196 233 C 248 240, 296 233, 328 224 M328 224 l -8.5 -1.5 M328 224 l -3.5 7.5"/>
-          <text class="mk-t" x="40" y="234" style="--d:0" transform="rotate(-2 40 234)">REFRIGERATION IS MOST OF THIS</text>
-          <text class="mk-t" x="40" y="248" style="--d:0" transform="rotate(-2 40 248)">AND IT NEVER SHUTS OFF</text>
-          <path class="mk" pathLength="1" style="--d:1" d="M352 296 C 350 281, 428 279, 430 294 C 432 310, 353 313, 351 298 C 350 287, 370 283, 392 282"/>
-          <path class="mk" pathLength="1" style="--d:1" d="M282 322 C 310 320, 332 314, 347 306 M347 306 l -8.5 0.5 M347 306 l -4.5 7"/>
-          <text class="mk-t" x="40" y="326" style="--d:1" transform="rotate(-2 40 326)">YOUR WORST 15 MINUTES: DEFROST</text>
-          <text class="mk-t" x="40" y="340" style="--d:1" transform="rotate(-2 40 340)">MEETING THE ROOFTOPS</text>
-          <path class="mk" pathLength="1" style="--d:2" d="M330 461 C 356 467, 396 464, 424 459"/>
-          <path class="mk" pathLength="1" style="--d:2" d="M244 524 C 296 522, 346 500, 370 472 M370 472 l -9 1.5 M370 472 l -1.5 9"/>
-          <text class="mk-t mk-t--big" x="40" y="522" style="--d:2" transform="rotate(-1.5 40 522)">&asymp; $1.8M IN SALES TO COVER.</text>
-          <text class="mk-t mk-t--big" x="40" y="546" style="--d:2" transform="rotate(-1.5 40 546)">ONE STORE. ONE MONTH.</text>
-        </svg>
-        <figcaption class="bill__cap">Exhibit A &middot; one store's month, read the way we read it. Figures illustrative.</figcaption>
-      </figure>
-    </div>
-  </section>
+      <div class="wrap hero__in hero__grid">
+        <div class="hero__copy">
+          <h1 id="hero-h">Stop paying for refrigeration that isn't cooling anything.</h1>
+          <p class="hero__lede">Refrigeration is the single largest load in your stores, and it never clocks out. We find the waste, prove the savings on your own equipment, and install nothing until the number is real.</p>
+          <div class="cta" data-cta>
+            <button type="button" class="btn btn--lg" data-book>Book the 15-minute fit call</button>
+            <button type="button" class="textlink js-sms-toggle" aria-expanded="false">Text Dan directly</button>
+          </div>
+        </div>
+        <figure class="bill">
+          <svg viewBox="0 0 460 592" role="img" aria-labelledby="bill-t">
+            <title id="bill-t">One supermarket's monthly electric bill, marked up the way we read it.</title>
+            <rect class="paper" x="14" y="8" width="432" height="576"/>
+            <text class="bt" x="40" y="56">COMMERCIAL ELECTRIC SERVICE</text>
+            <text class="meta" x="40" y="74">STATEMENT OF ACCOUNT</text>
+            <rect class="tag" x="344" y="40" width="76" height="22"/>
+            <text class="meta" x="382" y="54.5" text-anchor="middle">SPECIMEN</text>
+            <line class="rule" x1="40" y1="92" x2="420" y2="92"/>
+            <text class="meta" x="40" y="114">ACCOUNT &middot;&middot;&middot;&middot;0146 &middot; STORE 114</text>
+            <text class="meta" x="286" y="114">RATE &middot; LGS-2</text>
+            <text class="meta" x="40" y="132">PERIOD &middot; JUL 01&ndash;JUL 31</text>
+            <text class="meta" x="286" y="132">METER &middot; 4K-20881</text>
+            <line class="rule" x1="40" y1="150" x2="420" y2="150"/>
+            <text class="row" x="40" y="180">Customer charge</text>
+            <text class="amt" x="420" y="180" text-anchor="end">88.00</text>
+            <text class="row" x="40" y="212">Energy charge &middot; 214,680 kWh</text>
+            <text class="amt" x="420" y="212" text-anchor="end">18,033.12</text>
+            <text class="row" x="40" y="268">Fuel cost adjustment</text>
+            <text class="amt" x="420" y="268" text-anchor="end">1,499.84</text>
+            <text class="row" x="40" y="300">Demand charge &middot; 486 kW</text>
+            <text class="amt" x="420" y="300" text-anchor="end">8,942.40</text>
+            <text class="row" x="40" y="360">Power factor adjustment</text>
+            <text class="amt" x="420" y="360" text-anchor="end">366.20</text>
+            <text class="row" x="40" y="392">Taxes and riders</text>
+            <text class="amt" x="420" y="392" text-anchor="end">2,015.66</text>
+            <line class="rule rule--ink" x1="40" y1="416" x2="420" y2="416"/>
+            <text class="bt" x="40" y="448">TOTAL DUE</text>
+            <text class="amt amt--total" x="420" y="449" text-anchor="end">$30,945.22</text>
+            <line class="rule" x1="40" y1="472" x2="420" y2="472"/>
+            <text class="meta" x="40" y="496">INTERVAL DATA ON FILE &middot; 2,976 READINGS &middot; 15-MIN</text>
+            <rect class="fine" x="40" y="570" width="196" height="3"/>
+            <path class="mk" pathLength="1" style="--d:0" d="M336 221 C 358 226, 398 223, 423 219"/>
+            <path class="mk" pathLength="1" style="--d:0" d="M196 233 C 248 240, 296 233, 328 224 M328 224 l -8.5 -1.5 M328 224 l -3.5 7.5"/>
+            <text class="mk-t" x="40" y="234" style="--d:0" transform="rotate(-2 40 234)">REFRIGERATION IS MOST OF THIS</text>
+            <text class="mk-t" x="40" y="248" style="--d:0" transform="rotate(-2 40 248)">AND IT NEVER SHUTS OFF</text>
+            <path class="mk" pathLength="1" style="--d:1" d="M352 296 C 350 281, 428 279, 430 294 C 432 310, 353 313, 351 298 C 350 287, 370 283, 392 282"/>
+            <path class="mk" pathLength="1" style="--d:1" d="M282 322 C 310 320, 332 314, 347 306 M347 306 l -8.5 0.5 M347 306 l -4.5 7"/>
+            <text class="mk-t" x="40" y="326" style="--d:1" transform="rotate(-2 40 326)">YOUR WORST 15 MINUTES: DEFROST</text>
+            <text class="mk-t" x="40" y="340" style="--d:1" transform="rotate(-2 40 340)">MEETING THE ROOFTOPS</text>
+            <path class="mk" pathLength="1" style="--d:2" d="M330 461 C 356 467, 396 464, 424 459"/>
+            <path class="mk" pathLength="1" style="--d:2" d="M244 524 C 296 522, 346 500, 370 472 M370 472 l -9 1.5 M370 472 l -1.5 9"/>
+            <text class="mk-t mk-t--big" x="40" y="522" style="--d:2" transform="rotate(-1.5 40 522)">&asymp; $1.8M IN SALES TO COVER.</text>
+            <text class="mk-t mk-t--big" x="40" y="546" style="--d:2" transform="rotate(-1.5 40 546)">ONE STORE. ONE MONTH.</text>
+          </svg>
+          <figcaption class="bill__cap">Exhibit A &middot; one store's month, read the way we read it. Figures illustrative.</figcaption>
+        </figure>
+      </div>
+      <div class="scrollcue" aria-hidden="true"><span></span>scroll</div>
+    </section>
+  </div>
 
   <section class="after">
     <div class="wrap">
       <p class="tag">…and the page continues from here, in the documentary grayscale</p>
       <h2>A dollar you stop spending is worth fifty-nine in sales.</h2>
-      <p>This stand-in exists only so there's room to scroll and watch the hero light up. On the real page, the beats below stay in the grayscale system — the color reveal is the hero's one signature moment. Scroll back up and it dims to black-and-white again.</p>
+      <p>The hero holds while it reads the bill and lights up; once the annotations are down and it's in full color, it releases and you move down into the page. The beats below stay in the grayscale system — the color reveal is the hero's one signature moment.</p>
     </div>
   </section>
   <div style="height:60vh"></div>
@@ -129,25 +159,24 @@
 
 <script>
 (function(){
-  var hero=document.getElementById("top");
+  var runway=document.getElementById("scrolly");
   var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if(!hero||reduce)return;
+  var narrow=matchMedia("(max-width:979px)").matches;
+  if(!runway||reduce||narrow){ if(runway) runway.style.setProperty("--p","1"); return; }
   var ticking=false;
   function update(){
     ticking=false;
-    var h=hero.offsetHeight||window.innerHeight;
-    // full reveal after scrolling ~85% of the hero height
-    var p=Math.min(Math.max(window.scrollY/(h*0.85),0),1);
-    // ease so the last stretch to full color is gentle
-    p=1-Math.pow(1-p,2);
-    hero.style.setProperty("--p",p.toFixed(3));
+    var vh=window.innerHeight;
+    var total=runway.offsetHeight - vh; if(total<=0){runway.style.setProperty("--p","1");return;}
+    var top=runway.getBoundingClientRect().top;
+    var p=Math.min(Math.max(-top/total,0),1);
+    runway.style.setProperty("--p",p.toFixed(4));
   }
-  function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(update); } }
+  function onScroll(){ if(!ticking){ticking=true;requestAnimationFrame(update);} }
   addEventListener("scroll",onScroll,{passive:true});
   addEventListener("resize",onScroll,{passive:true});
   update();
 })();
 </script>
-<script src="assets/site.js" defer></script>
 </body>
 </html>
