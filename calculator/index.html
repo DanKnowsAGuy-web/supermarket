@@ -625,14 +625,15 @@ function track(evt,data){
 var _lastPostedH=-1;
 function postHeight(){
   if(window.parent===window)return;
-  var h=document.documentElement.scrollHeight+4; /* small buffer so an auto-sized iframe never clips its last row */
+  var h=document.documentElement.scrollHeight; /* exact content height: any buffer here feeds a monotonic growth loop against a 100vh container */
   if(h===_lastPostedH)return;                    /* dedupe: never re-post an unchanged height */
   _lastPostedH=h;
   try{window.parent.postMessage({type:"ep-embed-height",height:h},"*");}catch(_e){}
 }
-/* when embedded, the parent sizes the iframe to our content, so we never scroll ourselves;
-   hiding our own overflow removes the scrollbar whose on/off flicker drove the height oscillation. */
-if(window.parent!==window){try{document.documentElement.style.overflowY="hidden";}catch(_e){}}
+/* when embedded, the parent sizes the iframe to our content: hide our own overflow (no
+   scrollbar flicker) AND drop the shell's 100vh min-height so the iframe hugs actual
+   content instead of forcing a full viewport (the 100vh was the growth loop's fuel). */
+if(window.parent!==window){try{document.documentElement.style.overflowY="hidden";var _es=document.createElement("style");_es.textContent=".shell{min-height:0}";document.head.appendChild(_es);}catch(_e){}}
 var _rzT=null;
 window.addEventListener("resize",function(){if(_rzT)clearTimeout(_rzT);_rzT=setTimeout(postHeight,120);});
 /* ---------------- item 2 + 15: deep links and memory ---------------- */
