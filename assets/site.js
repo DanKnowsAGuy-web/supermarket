@@ -10,8 +10,9 @@
   /* ---------- header: the mark alone over the hero ---------- */
   const head = document.getElementById("head");
   const hero = document.querySelector(".hero");
+  const heroStage = document.querySelector(".hero-scrolly") || hero;
   if (head && hero) {
-    const sync = () => head.classList.toggle("is-clear", window.scrollY < hero.offsetHeight - 64);
+    const sync = () => head.classList.toggle("is-clear", window.scrollY < heroStage.offsetHeight - 64);
     sync();
     addEventListener("scroll", sync, { passive: true });
     addEventListener("resize", sync, { passive: true });
@@ -35,6 +36,27 @@
         if (document.hidden) targets.forEach((el) => el.classList.add("is-in"));
       });
     }));
+  }
+
+  /* ---------- hero: pinned scroll-scrub (annotations draw on, B&W -> colour) ----------
+     Desktop + motion only. One --p (0..1) on .hero-scrolly is read by the CSS to draw
+     the pen marks and colourise the store while the hero is pinned; then it releases.
+     Reduced motion / small screens skip the pin and keep the static resting frame. */
+  const runway = document.querySelector(".hero-scrolly");
+  if (runway && !reduced && !matchMedia("(max-width: 979px)").matches) {
+    document.documentElement.classList.add("hero-pin");
+    let pTick = false;
+    const setP = () => {
+      pTick = false;
+      const total = runway.offsetHeight - innerHeight;
+      if (total <= 0) { runway.style.setProperty("--p", "1"); return; }
+      const p = Math.min(Math.max(-runway.getBoundingClientRect().top / total, 0), 1);
+      runway.style.setProperty("--p", p.toFixed(4));
+    };
+    const onP = () => { if (!pTick) { pTick = true; requestAnimationFrame(setP); } };
+    addEventListener("scroll", onP, { passive: true });
+    addEventListener("resize", onP, { passive: true });
+    setP();
   }
 
   /* ---------- text-the-founder panels ---------- */
