@@ -78,12 +78,13 @@
     let rTick = false;
     const rUpd = () => {
       rTick = false;
-      const mid = innerHeight / 2;
+      const vh = innerHeight;
       vis.forEach((el) => {
         const r = el.getBoundingClientRect();
-        let c = (mid - r.top) / (r.height || 1);   // 0 = top at centre, 1 = bottom at centre
-        c = Math.min(Math.max(c, 0), 1);
-        el.style.setProperty("--c", (1 - Math.pow(1 - c, 2.2)).toFixed(3)); // ~80% by the midpoint
+        // Linear over nearly a full screen of scroll: 0% when the image bottom is at the
+        // viewport bottom, 50% when its middle is centred, 100% when its top hits the top.
+        const p = 1 - r.top / Math.max(vh - r.height, 1);
+        el.style.setProperty("--c", Math.min(Math.max(p, 0), 1).toFixed(3));
       });
     };
     const rOnScroll = () => { if (!rTick) { rTick = true; requestAnimationFrame(rUpd); } };
