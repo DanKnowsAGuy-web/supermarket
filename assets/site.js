@@ -64,8 +64,7 @@
      ~80% when its middle is (eased), 100% when its bottom is, then it holds. Reverses on
      scroll-up. PREVIEW-GATED behind ?reveal for now; remove the param check to go live. */
   const revealImgs = document.querySelectorAll("img.js-reveal");
-  const revealWanted = new URLSearchParams(location.search).has("reveal");
-  if (revealImgs.length && !reduced && revealWanted && "IntersectionObserver" in window) {
+  if (revealImgs.length && !reduced && "IntersectionObserver" in window) {
     document.documentElement.classList.add("reveal-on");
     const vis = new Set();
     const io = new IntersectionObserver((entries) => {
