@@ -224,6 +224,21 @@ html.hero-pin .bill .mk-t {
   color: oklch(0.8 0.006 260); opacity: clamp(0, calc(1 - var(--p, 0) * 3), 1); pointer-events: none;
 }
 .hero-pin .scrollcue span { width: 1px; height: 22px; background: currentColor; opacity: 0.6; }
+
+/* scroll-reveal: photographs come alive from B&W to colour as they cross the viewport
+   centre. site.js adds .reveal-on (motion allowed) and drives each img.js-reveal by its
+   own --c (0..1). Higher specificity (html.reveal-on img.js-reveal) so it overrides the
+   base grayscale filters on plates, the portrait, and the kit photos. Technical line
+   drawings (the coil cutaway) and the B&W SunCore are deliberately NOT tagged, so they
+   stay in ink — the measurement register stays measurement; the real places come alive. */
+html.reveal-on img.js-reveal {
+  filter:
+    grayscale(calc(1 - var(--c, 0)))
+    saturate(calc(1 + 0.25 * var(--c, 0)))
+    contrast(1.05)
+    brightness(calc(0.9 + 0.1 * var(--c, 0)));
+  transition: filter 90ms linear;
+}
 .hero__in, .close__in { position: relative; padding-block: clamp(6rem, 12vh, 9rem); }
 .hero h1 {
   color: white; font-size: var(--step-4); font-weight: 840; font-stretch: 122%;

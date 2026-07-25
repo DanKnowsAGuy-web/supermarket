@@ -59,6 +59,39 @@
     setP();
   }
 
+  /* ---------- scroll-reveal: photos go B&W -> colour as they cross the viewport centre ----------
+     Each img.js-reveal is driven by its own --c: 0 when its top is at the screen's middle,
+     ~80% when its middle is (eased), 100% when its bottom is, then it holds. Reverses on
+     scroll-up. PREVIEW-GATED behind ?reveal for now; remove the param check to go live. */
+  const revealImgs = document.querySelectorAll("img.js-reveal");
+  const revealWanted = new URLSearchParams(location.search).has("reveal");
+  if (revealImgs.length && !reduced && revealWanted && "IntersectionObserver" in window) {
+    document.documentElement.classList.add("reveal-on");
+    const vis = new Set();
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) vis.add(e.target);
+        else { vis.delete(e.target); e.target.style.setProperty("--c", e.boundingClientRect.top < 0 ? "1" : "0"); }
+      }
+    }, { threshold: 0 });
+    revealImgs.forEach((el) => io.observe(el));
+    let rTick = false;
+    const rUpd = () => {
+      rTick = false;
+      const mid = innerHeight / 2;
+      vis.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        let c = (mid - r.top) / (r.height || 1);   // 0 = top at centre, 1 = bottom at centre
+        c = Math.min(Math.max(c, 0), 1);
+        el.style.setProperty("--c", (1 - Math.pow(1 - c, 2.2)).toFixed(3)); // ~80% by the midpoint
+      });
+    };
+    const rOnScroll = () => { if (!rTick) { rTick = true; requestAnimationFrame(rUpd); } };
+    addEventListener("scroll", rOnScroll, { passive: true });
+    addEventListener("resize", rOnScroll, { passive: true });
+    rUpd();
+  }
+
   /* ---------- text-the-founder panels ---------- */
   const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (/Mac/.test(navigator.userAgent) && "ontouchend" in document);
   const buildSms = (panel) => {
