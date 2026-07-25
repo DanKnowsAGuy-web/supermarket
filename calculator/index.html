@@ -622,11 +622,19 @@ function track(evt,data){
   }catch(_e){}
 }
 /* ---------------- item 11: embed height ---------------- */
+var _lastPostedH=-1;
 function postHeight(){
   if(window.parent===window)return;
-  try{window.parent.postMessage({type:"ep-embed-height",height:document.documentElement.scrollHeight},"*");}catch(_e){}
+  var h=document.documentElement.scrollHeight+4; /* small buffer so an auto-sized iframe never clips its last row */
+  if(h===_lastPostedH)return;                    /* dedupe: never re-post an unchanged height */
+  _lastPostedH=h;
+  try{window.parent.postMessage({type:"ep-embed-height",height:h},"*");}catch(_e){}
 }
-window.addEventListener("resize",postHeight);
+/* when embedded, the parent sizes the iframe to our content, so we never scroll ourselves;
+   hiding our own overflow removes the scrollbar whose on/off flicker drove the height oscillation. */
+if(window.parent!==window){try{document.documentElement.style.overflowY="hidden";}catch(_e){}}
+var _rzT=null;
+window.addEventListener("resize",function(){if(_rzT)clearTimeout(_rzT);_rzT=setTimeout(postHeight,120);});
 /* ---------------- item 2 + 15: deep links and memory ---------------- */
 function serialize(){
   var p=new URLSearchParams();
@@ -924,10 +932,11 @@ function paintResults(animate){
   if(animate&&!REDUCE&&!st.revealed){
     st.revealed=true;
     var tv=$("total-v"),t0=performance.now(),dur=900;
+    if(window._epCountRaf)cancelAnimationFrame(window._epCountRaf); /* non-re-entrant: kill any in-flight scroller */
     (function step(t){
       var p=Math.min((t-t0)/dur,1),e=1-Math.pow(1-p,4);
       tv.textContent=RNG(r.floor*e,r.ceil*e);
-      if(p<1)requestAnimationFrame(step);else tv.textContent=RNG(r.floor,r.ceil);
+      if(p<1)window._epCountRaf=requestAnimationFrame(step);else{window._epCountRaf=0;tv.textContent=RNG(r.floor,r.ceil);}
     })(t0);
   }
   /* portfolio + fit */

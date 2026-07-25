@@ -124,7 +124,10 @@
       let h = null;
       if (typeof e.data === "number") h = e.data;
       else if (e.data && typeof e.data === "object" && typeof e.data.height === "number") h = e.data.height;
-      if (h && h > 300 && h < 4000) calcFrame.style.height = h + "px";
+      if (h && h > 300 && h < 4000) {
+      const cur = parseInt(calcFrame.style.height, 10) || 0;
+      if (Math.abs(h - cur) > 2) calcFrame.style.height = h + "px"; /* only resize on a real change */
+    }
     });
   }
 
