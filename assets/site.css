@@ -203,13 +203,15 @@ sup.fn a { color: inherit; text-decoration: none; }
 .hero-pin .hero .hero__scrim { opacity: calc(1 - 0.32 * var(--rev)); }
 /* marks + notes become scroll-driven; suppress the load-time draw while pinned.
    Match .anim-ready's [pathLength] specificity and rely on later source order. */
-.hero-pin .bill svg { animation: none; }
-.hero-pin .bill .mk[pathLength] {
+/* html.hero-pin (not just .hero-pin) so these outrank the equal-specificity, later
+   .anim-ready load-draw rules — otherwise the timed billDraw would override the scrub. */
+html.hero-pin .bill svg { animation: none; }
+html.hero-pin .bill .mk[pathLength] {
   animation: none; stroke-dasharray: 1;
   --s: calc(0.10 + var(--d, 0) * 0.14);
   stroke-dashoffset: clamp(0, calc(1 - (var(--p, 0) - var(--s)) / 0.16), 1);
 }
-.hero-pin .bill .mk-t {
+html.hero-pin .bill .mk-t {
   animation: none;
   --s: calc(0.17 + var(--d, 0) * 0.14);
   opacity: clamp(0, calc((var(--p, 0) - var(--s)) / 0.10), 1);
