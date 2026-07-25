@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hero B preview — Energy Plus Supermarket</title>
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="light">
+<link rel="stylesheet" href="assets/fonts/report-fonts.css">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  .previewnote{position:fixed;z-index:99;left:50%;top:12px;transform:translateX(-50%);
+    background:oklch(0.17 0.005 270);color:#fff;font:500 12px/1.4 "Spline Sans Mono",monospace;
+    letter-spacing:.04em;padding:7px 14px;border-radius:5px;box-shadow:0 8px 24px -8px rgba(0,0,0,.5);opacity:.94}
+  .previewnote b{color:oklch(0.82 0.15 80)}
+</style>
+</head>
+<body>
+<p class="previewnote"><b>PREVIEW</b> · Hero option B — bill on a working-store photo. Not the live page.</p>
+
+<header class="head" id="head">
+  <div class="wrap head__in">
+    <a class="head__mark" href="#top" aria-label="Energy Plus, home"><img src="assets/img/energy-plus-logo.png" alt="Energy Plus" width="104" height="30"></a>
+    <nav class="head__nav" aria-label="Primary">
+      <a href="#plan">The plan</a>
+      <a href="#proof">Proof</a>
+      <a href="how-it-works.html">How it works</a>
+      <button type="button" class="btn btn--sm" data-book>Book the 15-minute fit call</button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <!-- HERO · option B: the exhibit floats over a darkened, working store -->
+  <section class="hero" id="top" aria-labelledby="hero-h">
+    <div class="hero__media" aria-hidden="true">
+      <img src="assets/img/hero-store.jpg" alt="" loading="eager">
+      <div class="hero__scrim"></div>
+    </div>
+    <div class="wrap hero__in hero__grid">
+      <div class="hero__copy">
+        <h1 id="hero-h">Stop paying for refrigeration that isn't cooling anything.</h1>
+        <p class="hero__lede">Refrigeration is the single largest load in your stores, and it never clocks out. We find the waste, prove the savings on your own equipment, and install nothing until the number is real.</p>
+        <div class="cta" data-cta>
+          <button type="button" class="btn btn--lg" data-book>Book the 15-minute fit call</button>
+          <button type="button" class="textlink js-sms-toggle" aria-expanded="false">Text Dan directly</button>
+        </div>
+        <div class="sms" role="group" aria-label="Text the founder">
+          <p class="sms__to">To Dan &middot; (864) 777-0688</p>
+          <textarea rows="4" spellcheck="false" aria-label="Message to Dan">Hi Dan, I handle facilities for a grocery operation and I'd like to see what real energy savings could look like across our stores, without the sales song and dance. What does it take to qualify?</textarea>
+          <div class="sms__foot">
+            <span class="sms__hint">Opens in your messages, ready to send.</span>
+            <a class="btn btn--sm js-sms-send" href="#" data-phone="+18647770688">Send message</a>
+          </div>
+        </div>
+      </div>
+      <figure class="bill">
+        <svg viewBox="0 0 460 592" role="img" aria-labelledby="bill-t">
+          <title id="bill-t">One supermarket's monthly electric bill, marked up the way we read it.</title>
+          <rect class="paper" x="14" y="8" width="432" height="576"/>
+          <text class="bt" x="40" y="56">COMMERCIAL ELECTRIC SERVICE</text>
+          <text class="meta" x="40" y="74">STATEMENT OF ACCOUNT</text>
+          <rect class="tag" x="344" y="40" width="76" height="22"/>
+          <text class="meta" x="382" y="54.5" text-anchor="middle">SPECIMEN</text>
+          <line class="rule" x1="40" y1="92" x2="420" y2="92"/>
+          <text class="meta" x="40" y="114">ACCOUNT &middot;&middot;&middot;&middot;0146 &middot; STORE 114</text>
+          <text class="meta" x="286" y="114">RATE &middot; LGS-2</text>
+          <text class="meta" x="40" y="132">PERIOD &middot; JUL 01&ndash;JUL 31</text>
+          <text class="meta" x="286" y="132">METER &middot; 4K-20881</text>
+          <line class="rule" x1="40" y1="150" x2="420" y2="150"/>
+          <text class="row" x="40" y="180">Customer charge</text>
+          <text class="amt" x="420" y="180" text-anchor="end">88.00</text>
+          <text class="row" x="40" y="212">Energy charge &middot; 214,680 kWh</text>
+          <text class="amt" x="420" y="212" text-anchor="end">18,033.12</text>
+          <text class="row" x="40" y="268">Fuel cost adjustment</text>
+          <text class="amt" x="420" y="268" text-anchor="end">1,499.84</text>
+          <text class="row" x="40" y="300">Demand charge &middot; 486 kW</text>
+          <text class="amt" x="420" y="300" text-anchor="end">8,942.40</text>
+          <text class="row" x="40" y="360">Power factor adjustment</text>
+          <text class="amt" x="420" y="360" text-anchor="end">366.20</text>
+          <text class="row" x="40" y="392">Taxes and riders</text>
+          <text class="amt" x="420" y="392" text-anchor="end">2,015.66</text>
+          <line class="rule rule--ink" x1="40" y1="416" x2="420" y2="416"/>
+          <text class="bt" x="40" y="448">TOTAL DUE</text>
+          <text class="amt amt--total" x="420" y="449" text-anchor="end">$30,945.22</text>
+          <line class="rule" x1="40" y1="472" x2="420" y2="472"/>
+          <text class="meta" x="40" y="496">INTERVAL DATA ON FILE &middot; 2,976 READINGS &middot; 15-MIN</text>
+          <rect class="fine" x="40" y="570" width="196" height="3"/>
+          <path class="mk" pathLength="1" style="--d:0" d="M336 221 C 358 226, 398 223, 423 219"/>
+          <path class="mk" pathLength="1" style="--d:0" d="M196 233 C 248 240, 296 233, 328 224 M328 224 l -8.5 -1.5 M328 224 l -3.5 7.5"/>
+          <text class="mk-t" x="40" y="234" style="--d:0" transform="rotate(-2 40 234)">REFRIGERATION IS MOST OF THIS</text>
+          <text class="mk-t" x="40" y="248" style="--d:0" transform="rotate(-2 40 248)">AND IT NEVER SHUTS OFF</text>
+          <path class="mk" pathLength="1" style="--d:1" d="M352 296 C 350 281, 428 279, 430 294 C 432 310, 353 313, 351 298 C 350 287, 370 283, 392 282"/>
+          <path class="mk" pathLength="1" style="--d:1" d="M282 322 C 310 320, 332 314, 347 306 M347 306 l -8.5 0.5 M347 306 l -4.5 7"/>
+          <text class="mk-t" x="40" y="326" style="--d:1" transform="rotate(-2 40 326)">YOUR WORST 15 MINUTES: DEFROST</text>
+          <text class="mk-t" x="40" y="340" style="--d:1" transform="rotate(-2 40 340)">MEETING THE ROOFTOPS</text>
+          <path class="mk" pathLength="1" style="--d:2" d="M330 461 C 356 467, 396 464, 424 459"/>
+          <path class="mk" pathLength="1" style="--d:2" d="M244 524 C 296 522, 346 500, 370 472 M370 472 l -9 1.5 M370 472 l -1.5 9"/>
+          <text class="mk-t mk-t--big" x="40" y="522" style="--d:2" transform="rotate(-1.5 40 522)">&asymp; $1.8M IN SALES TO COVER.</text>
+          <text class="mk-t mk-t--big" x="40" y="546" style="--d:2" transform="rotate(-1.5 40 546)">ONE STORE. ONE MONTH.</text>
+        </svg>
+        <figcaption class="bill__cap">Exhibit A &middot; one store's month, read the way we read it. Figures illustrative.</figcaption>
+      </figure>
+    </div>
+  </section>
+</main>
+
+<script src="assets/site.js" defer></script>
+</body>
+</html>

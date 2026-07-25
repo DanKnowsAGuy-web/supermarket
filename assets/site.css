@@ -171,6 +171,16 @@ sup.fn a { color: inherit; text-decoration: none; }
     linear-gradient(to right, oklch(0.15 0.006 260 / 0.92) 0%, oklch(0.15 0.006 260 / 0.62) 55%, oklch(0.15 0.006 260 / 0.4) 100%),
     linear-gradient(to top, oklch(0.15 0.006 260 / 0.9), transparent 45%);
 }
+/* HERO-B: the specimen bill floats over a darkened, working-store photo.
+   Both overrides are scoped to .hero so the close section's media/scrim are untouched;
+   they are inert until the hero markup carries a .hero__media element. */
+.hero .hero__media img { filter: grayscale(1) contrast(1.05) brightness(0.55); }
+.hero .hero__scrim {
+  background:
+    linear-gradient(to right, oklch(0.13 0.006 260 / 0.93) 0%, oklch(0.13 0.006 260 / 0.55) 42%, oklch(0.13 0.006 260 / 0.52) 70%, oklch(0.13 0.006 260 / 0.85) 100%),
+    linear-gradient(to top, oklch(0.13 0.006 260 / 0.86), transparent 52%),
+    radial-gradient(95% 78% at 60% 42%, transparent 0%, oklch(0.13 0.006 260 / 0.32) 78%);
+}
 .hero__in, .close__in { position: relative; padding-block: clamp(6rem, 12vh, 9rem); }
 .hero h1 {
   color: white; font-size: var(--step-4); font-weight: 840; font-stretch: 122%;
