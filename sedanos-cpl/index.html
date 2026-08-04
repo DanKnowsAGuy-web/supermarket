@@ -14,6 +14,34 @@
 <link rel="stylesheet" href="../assets/fonts/report-fonts.css">
 <link rel="stylesheet" href="../assets/site.css">
 <style>
+/* ---- CPL page-local fixes ---- */
+/* keep hero/close copy + its buttons above the background media (guarantees clicks land) */
+.hero__copy, .close__in { position: relative; z-index: 3; }
+/* pinned hero: tighten vertical padding so the CTA can't clip at the hero's edge */
+.hero-pin .hero__in { padding-block: clamp(2.25rem, 5vh, 4rem); }
+
+/* SMS reveal -> centered popover (was an inline expander that shoved the hero grid) */
+.sms.is-open {
+  position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  z-index: 90; margin: 0; width: min(31rem, calc(100vw - 2rem)); max-width: none;
+  box-shadow: 0 24px 70px -18px rgba(0,0,0,.7);
+}
+.sms-backdrop { position: fixed; inset: 0; z-index: 80; background: oklch(0.13 0.006 260 / 0.62); backdrop-filter: blur(2px); }
+.sms-backdrop[hidden] { display: none; }
+.sms__close {
+  position: absolute; top: .35rem; right: .45rem; width: 1.9rem; height: 1.9rem;
+  display: grid; place-items: center; border: 0; border-radius: 50%; cursor: pointer;
+  background: transparent; color: inherit; font-size: 1.4rem; line-height: 1; opacity: .68;
+}
+.sms__close:hover { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .sms-backdrop { backdrop-filter: none; } }
+
+/* Sedano's: prominent prospect lockup above the H1 */
+.pf { display: flex; flex-wrap: wrap; align-items: baseline; gap: .35rem .7rem; margin-bottom: 1.15rem; }
+.pf__eyebrow { font-family: var(--font-mono); font-size: .68rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: oklch(0.72 0.006 260); flex-basis: 100%; }
+.pf__brand { font-family: var(--font-sans); font-weight: 800; font-stretch: 115%; font-size: clamp(1.4rem, 2.7vw, 2.05rem); letter-spacing: -.01em; color: #fff; line-height: 1; }
+.pf__loc { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: oklch(0.7 0.006 260); }
+
 .sms__email{display:inline-block;margin-left:.7rem;color:inherit;opacity:.82;font-size:.82rem;text-decoration:underline;text-underline-offset:2px}
 .sms__email:hover{opacity:1}
 </style>
@@ -44,7 +72,7 @@
     </div>
     <div class="wrap hero__in hero__grid">
       <div class="hero__copy">
-        <p class="hero__kicker" style="font-family:var(--font-mono);font-size:.72rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.8 0.006 260);margin-bottom:1.1rem">Prepared for Sedano's Supermarkets &middot; Hialeah &rarr; Miami</p>
+        <p class="pf"><span class="pf__eyebrow">Prepared for</span><span class="pf__brand">Sedano's Supermarkets</span><span class="pf__loc">&middot; Hialeah &rarr; Miami</span></p>
         <h1 id="hero-h">Stop paying for refrigeration that isn't cooling anything.</h1>
         <p class="hero__lede">You already stand next to FPL every hurricane season &mdash; here's what your stores pay them the other 360 days, and how to pay less. In South Florida the humidity never lets up, so refrigeration is your biggest load and it never clocks out. We prove the savings on your own equipment before you spend a dime.</p>
         <div class="cta" data-cta>
@@ -579,8 +607,8 @@
         <summary><span class="plus" aria-hidden="true">+</span>Meet the people behind the numbers</summary>
         <div class="gate__body">
           <div class="team">
+            <div class="person"><img src="../assets/img/ronson.jpeg" alt="Ronson Provido" loading="lazy"><div><h3>Ronson Provido</h3><p class="person__role">Principal Engineering Advisor &middot; CPL</p><p>20+ years in electrical engineering across design, commissioning, and project management, including LAX. Licensed PE, Title 24 and LEED qualified.</p></div></div>
             <div class="person"><img src="../assets/img/daniel.jpeg" alt="Daniel Gutierrez" loading="lazy"><div><h3>Daniel Gutierrez</h3><p class="person__role">CEO + Founder</p><p>Founder of CPL (Christ Power &amp; Light), an independent energy solutions partner. 19 years connecting people, capital, and opportunity across 14+ industries. Former director of FDA-registered clinical trials. Works fee-for-performance.</p></div></div>
-            <div class="person"><img src="../assets/img/ronson.jpeg" alt="Ronson Provido" loading="lazy"><div><h3>Ronson Provido</h3><p class="person__role">Principal Engineering Advisor</p><p>20+ years in electrical engineering across design, commissioning, and project management, including LAX. Licensed PE, Title 24 and LEED qualified.</p></div></div>
             <div class="person"><img src="../assets/img/cj.jpeg" alt="CJ Metz" loading="lazy"><div><h3>CJ Metz</h3><p class="person__role">Strategic Account Manager</p><p>23+ years in technology leadership, sales, and consulting. Air Force veteran with major initiatives for Fortune 500 firms.</p></div></div>
             <div class="person"><img src="../assets/img/pepper.jpeg" alt="Pepper J. Matanga" loading="lazy"><div><h3>Pepper J. Matanga</h3><p class="person__role">Partnerships &amp; Business Development</p><p>25+ years leading P.E.P. &amp; Associates, with partnerships from AT&amp;T, Boeing, and NASA to the US Marine Corps and Navy.</p></div></div>
             <div class="person"><img src="../assets/img/raul.jpeg" alt="Raul Solis" loading="lazy"><div><h3>Raul Solis</h3><p class="person__role">International Market Development</p><p>A decade opening retail, commercial, and government channels in Mexican and South American markets.</p></div></div>
@@ -667,5 +695,40 @@
 </dialog>
 
 <script src="../assets/site.js" defer></script>
+<script>
+/* CPL page-local: turn the shared SMS reveal into a real centered popover with a
+   dimmed backdrop, single-open, a close button, and Escape/outside-click to close.
+   The shared site.js still toggles .is-open on the panel; this only enhances it. */
+(function(){
+  var bd = document.createElement('div');
+  bd.className = 'sms-backdrop'; bd.hidden = true;
+  document.body.appendChild(bd);
+  function openPanels(){ return Array.prototype.slice.call(document.querySelectorAll('.sms.is-open')); }
+  function sync(){ bd.hidden = openPanels().length === 0; }
+  function closeAll(){
+    document.querySelectorAll('.sms.is-open').forEach(function(p){ p.classList.remove('is-open'); });
+    document.querySelectorAll('.js-sms-toggle[aria-expanded="true"]').forEach(function(b){ b.setAttribute('aria-expanded','false'); });
+    sync();
+  }
+  bd.addEventListener('click', closeAll);
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeAll(); });
+  document.addEventListener('click', function(e){
+    if (!e.target.closest('.js-sms-toggle')) return;
+    setTimeout(function(){
+      var open = openPanels();
+      if (open.length > 1) open.slice(0, -1).forEach(function(p){ p.classList.remove('is-open'); });
+      openPanels().forEach(function(p){
+        if (!p.querySelector('.sms__close')) {
+          var x = document.createElement('button');
+          x.type = 'button'; x.className = 'sms__close'; x.setAttribute('aria-label', 'Close'); x.innerHTML = '&times;';
+          x.addEventListener('click', closeAll);
+          p.appendChild(x);
+        }
+      });
+      sync();
+    }, 0);
+  });
+})();
+</script>
 </body>
 </html>
