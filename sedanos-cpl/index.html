@@ -22,15 +22,18 @@
 /* pinned (desktop) hero: tighten vertical padding so the CTA can't clip */
 .hero-pin .hero__in{ padding-block: clamp(2.25rem, 5vh, 4rem); }
 
-/* Sedano's x CPL co-brand row: prospect left, CPL mark right (two columns) */
-.cobrand{ display:flex; align-items:center; justify-content:space-between; gap:1rem 1.5rem; flex-wrap:wrap;
-  margin-bottom: clamp(1.4rem,3vw,2rem); padding-bottom: clamp(1rem,2vw,1.3rem);
-  border-bottom:1px solid oklch(0.42 0.006 260 / .5); }
-.cobrand__prospect{ display:flex; flex-direction:column; gap:.22rem; }
-.cobrand__eyebrow{ font-family:var(--font-mono); font-size:.66rem; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:oklch(0.72 0.006 260); }
-.cobrand__brand{ font-family:var(--font-sans); font-weight:800; font-stretch:115%; font-size:clamp(1.35rem,2.7vw,2rem); letter-spacing:-.01em; color:#fff; line-height:1.02; }
-.cobrand__loc{ font-family:var(--font-mono); font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:oklch(0.7 0.006 260); }
-.cobrand__logo{ height:40px; width:auto; flex:none; filter: brightness(0) invert(1); opacity:.94; }
+/* Sedano's x CPL co-brand: ONE compact row (prospect left, CPL mark right) */
+.cobrand{ display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:nowrap;
+  margin-bottom: clamp(1rem,2.2vw,1.4rem); }
+.cobrand__prospect{ min-width:0; display:flex; align-items:baseline; flex-wrap:wrap; gap:.25rem .6rem; }
+.cobrand__eyebrow{ font-family:var(--font-mono); font-size:.6rem; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:oklch(0.68 0.006 260); }
+.cobrand__brand{ font-family:var(--font-sans); font-weight:800; font-stretch:112%; font-size:clamp(1.1rem,2.3vw,1.55rem); letter-spacing:-.01em; color:#fff; line-height:1.05; }
+.cobrand__loc{ font-family:var(--font-mono); font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:oklch(0.7 0.006 260); }
+.cobrand__logo{ height:32px; width:auto; flex:none; filter: brightness(0) invert(1); opacity:.94; }
+
+/* hero headline dialed down so it no longer blows the CTA out of the hero */
+.hero h1{ font-size: clamp(1.8rem, 1rem + 3.2vw, 2.85rem); line-height: 1.04; letter-spacing: -0.02em; }
+.hero__lede{ font-size: clamp(1rem, .92rem + .5vw, 1.16rem); }
 
 /* SMS reveal -> centered popover, portaled to <body> by the CPL script; styled
    self-contained so it reads the same regardless of which section it came from */
@@ -58,7 +61,7 @@
 
 <header class="head" id="head">
   <div class="wrap head__in">
-    <a class="head__mark" href="#top" aria-label="CPL, Christ Power and Light, home"><img src="../assets/img/cpl-logo-ink.png" alt="CPL · Christ Power &amp; Light" width="86" height="37" style="width:86px;height:auto"></a>
+    <span class="head__mark" aria-hidden="true"></span>
     <nav class="head__nav" aria-label="Primary">
       <a href="#plan">The plan</a>
       <a href="#proof">Proof</a>
@@ -88,7 +91,7 @@
           <img class="cobrand__logo" src="../assets/img/cpl-logo-ink.png" alt="CPL &middot; Christ Power &amp; Light" width="94" height="40">
         </div>
         <h1 id="hero-h">Stop paying for refrigeration that isn't cooling anything.</h1>
-        <p class="hero__lede">You already stand next to FPL every hurricane season &mdash; here's what your stores pay them the other 360 days, and how to pay less. In South Florida the humidity never lets up, so refrigeration is your biggest load and it never clocks out. We prove the savings on your own equipment before you spend a dime.</p>
+        <p class="hero__lede">In South Florida, refrigeration is your biggest load and it never clocks out. We prove the savings on your own equipment before you spend a dime.</p>
         <div class="cta" data-cta>
           <button type="button" class="btn btn--lg" data-book>Book the 15-minute fit call</button>
           <button type="button" class="textlink js-sms-toggle" aria-expanded="false">Text Ron directly</button>
