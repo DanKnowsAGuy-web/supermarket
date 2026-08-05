@@ -65,6 +65,14 @@
 .close .person img{ width:100%; height:auto; aspect-ratio:4/5; object-fit:cover; object-position:center top; border-radius:6px; margin-bottom:.9rem; }
 .close .person h3{ font-size:var(--step-1); color:var(--panel-ink); }
 .close .person__role{ color:var(--amber); }
+
+/* desktop-only: scan-to-text-Ron QR (phone users just tap "Text Ron") */
+.qr-ron{ display:none; }
+@media (min-width:760px){ .qr-ron{ display:flex; align-items:center; gap:1.2rem; margin-top:1.6rem; } }
+.qr-ron img{ width:150px; height:150px; background:#fff; padding:10px; border-radius:8px; flex:none; }
+.qr-ron__cap{ margin:0; max-width:28ch; font-size:.9rem; line-height:1.5; color:var(--panel-body); }
+.qr-ron__cap strong{ color:var(--panel-ink); }
+.qr-ron__cap a{ color:var(--panel-ink); text-decoration:underline; text-underline-offset:2px; }
 </style>
 </head>
 <body>
@@ -108,11 +116,11 @@
           <button type="button" class="textlink js-sms-toggle" aria-expanded="false">Text Ron directly</button>
         </div>
         <div class="sms" role="group" aria-label="Text Ron">
-          <p class="sms__to">To Ron &middot; (XXX) XXX-XXXX</p>
+          <p class="sms__to">To Ron &middot; (561) 410-4253</p>
           <textarea rows="4" spellcheck="false" aria-label="Message to Ron">Hey Ron, I handle facilities for a grocery operation and I'd like to see what real energy savings could look like across our stores, without the sales song and dance. What does it take to qualify?</textarea>
           <div class="sms__foot">
             <span class="sms__hint">Opens in your messages, ready to send.</span>
-            <a class="btn btn--sm js-sms-send" href="#" data-phone="+1XXXXXXXXXX">Send message</a> <a class="sms__email" href="mailto:ron@cpl.vision?subject=Energy%20savings%20across%20our%20stores&body=Hey%20Ron%2C%20I%20handle%20facilities%20for%20a%20grocery%20operation%20and%20I%27d%20like%20to%20see%20what%20real%20energy%20savings%20could%20look%20like%20across%20our%20stores%2C%20without%20the%20sales%20song%20and%20dance.%20What%20does%20it%20take%20to%20qualify%3F">Email Ron instead</a>
+            <a class="btn btn--sm js-sms-send" href="#" data-phone="+15614104253">Send message</a> <a class="sms__email" href="mailto:ron@cpl.vision?subject=Energy%20savings%20across%20our%20stores&body=Hey%20Ron%2C%20I%20handle%20facilities%20for%20a%20grocery%20operation%20and%20I%27d%20like%20to%20see%20what%20real%20energy%20savings%20could%20look%20like%20across%20our%20stores%2C%20without%20the%20sales%20song%20and%20dance.%20What%20does%20it%20take%20to%20qualify%3F">Email Ron instead</a>
           </div>
         </div>
       </div>
@@ -437,11 +445,11 @@
         <button type="button" class="textlink js-sms-toggle" aria-expanded="false">Text Ron directly</button>
       </div>
       <div class="sms" role="group" aria-label="Text Ron">
-        <p class="sms__to">To Ron &middot; (XXX) XXX-XXXX</p>
+        <p class="sms__to">To Ron &middot; (561) 410-4253</p>
         <textarea rows="4" spellcheck="false" aria-label="Message to Ron">Hey Ron, I handle facilities for a grocery operation and I'd like to see what real energy savings could look like across our stores, without the sales song and dance. What does it take to qualify?</textarea>
         <div class="sms__foot">
           <span class="sms__hint">Opens in your messages, ready to send.</span>
-          <a class="btn btn--sm js-sms-send" href="#" data-phone="+1XXXXXXXXXX">Send message</a> <a class="sms__email" href="mailto:ron@cpl.vision?subject=Energy%20savings%20across%20our%20stores&body=Hey%20Ron%2C%20I%20handle%20facilities%20for%20a%20grocery%20operation%20and%20I%27d%20like%20to%20see%20what%20real%20energy%20savings%20could%20look%20like%20across%20our%20stores%2C%20without%20the%20sales%20song%20and%20dance.%20What%20does%20it%20take%20to%20qualify%3F">Email Ron instead</a>
+          <a class="btn btn--sm js-sms-send" href="#" data-phone="+15614104253">Send message</a> <a class="sms__email" href="mailto:ron@cpl.vision?subject=Energy%20savings%20across%20our%20stores&body=Hey%20Ron%2C%20I%20handle%20facilities%20for%20a%20grocery%20operation%20and%20I%27d%20like%20to%20see%20what%20real%20energy%20savings%20could%20look%20like%20across%20our%20stores%2C%20without%20the%20sales%20song%20and%20dance.%20What%20does%20it%20take%20to%20qualify%3F">Email Ron instead</a>
         </div>
       </div>
     </div>
@@ -624,12 +632,16 @@
         <button type="button" class="textlink textlink--dark js-sms-toggle" aria-expanded="false">Text Ron directly</button>
       </div>
       <div class="sms" role="group" aria-label="Text Ron">
-        <p class="sms__to">To Ron &middot; (XXX) XXX-XXXX</p>
+        <p class="sms__to">To Ron &middot; (561) 410-4253</p>
         <textarea rows="4" spellcheck="false" aria-label="Message to Ron">Hey Ron, I handle facilities for a grocery operation and I'd like to see what real energy savings could look like across our stores, without the sales song and dance. What does it take to qualify?</textarea>
         <div class="sms__foot">
           <span class="sms__hint">Opens in your messages, ready to send.</span>
-          <a class="btn btn--sm js-sms-send" href="#" data-phone="+1XXXXXXXXXX">Send message</a> <a class="sms__email" href="mailto:ron@cpl.vision?subject=Energy%20savings%20across%20our%20stores&body=Hey%20Ron%2C%20I%20handle%20facilities%20for%20a%20grocery%20operation%20and%20I%27d%20like%20to%20see%20what%20real%20energy%20savings%20could%20look%20like%20across%20our%20stores%2C%20without%20the%20sales%20song%20and%20dance.%20What%20does%20it%20take%20to%20qualify%3F">Email Ron instead</a>
+          <a class="btn btn--sm js-sms-send" href="#" data-phone="+15614104253">Send message</a> <a class="sms__email" href="mailto:ron@cpl.vision?subject=Energy%20savings%20across%20our%20stores&body=Hey%20Ron%2C%20I%20handle%20facilities%20for%20a%20grocery%20operation%20and%20I%27d%20like%20to%20see%20what%20real%20energy%20savings%20could%20look%20like%20across%20our%20stores%2C%20without%20the%20sales%20song%20and%20dance.%20What%20does%20it%20take%20to%20qualify%3F">Email Ron instead</a>
         </div>
+      </div>
+      <div class="qr-ron" aria-label="Scan to text Ron from your phone">
+        <img src="../assets/img/qr-text-ron.svg" alt="QR code that opens a pre-filled text message to Ron" width="150" height="150">
+        <p class="qr-ron__cap">On a desktop? <strong>Scan to text Ron</strong> &mdash; it opens a pre-filled message on your phone. Prefer email? <a href="mailto:ron@cpl.vision?subject=Energy%20savings%20across%20our%20stores&body=Hey%20Ron%2C%20I%20handle%20facilities%20for%20a%20grocery%20operation%20and%20I%27d%20like%20to%20see%20what%20real%20energy%20savings%20could%20look%20like%20across%20our%20stores.%20What%20does%20it%20take%20to%20qualify%3F">Email Ron instead</a>.</p>
       </div>
       <div class="team-block">
         <p class="team-block__label">The team</p>
@@ -695,7 +707,7 @@
         <p>The information presented is general and educational in nature. It is not engineering, financial, tax, or legal advice for your specific situation. A formal assessment of your facility is required before any specific recommendation, scope, or projected result can be provided.</p>
         <h4>14. Analogies</h4>
         <p>References to diagnosis, examinations, prescriptions, or disease are analogies used to describe the energy assessment process. They are not medical statements and are not intended to convey any medical meaning.</p>
-        <p><strong>Questions.</strong> For questions about these disclosures or any statement in our materials, contact CPL at <a href="mailto:hello@CPL-EMAIL">hello@CPL-EMAIL</a> or <a href="tel:+1XXXXXXXXXX">(XXX) XXX-XXXX</a>.</p>
+        <p><strong>Questions.</strong> For questions about these disclosures or any statement in our materials, contact CPL at <a href="mailto:hello@CPL-EMAIL">hello@CPL-EMAIL</a> or <a href="tel:+15614104253">(561) 410-4253</a>.</p>
       </div>
     </details>
 
