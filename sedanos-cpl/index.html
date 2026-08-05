@@ -786,6 +786,23 @@
       var ta = p.querySelector('textarea'); if(ta) ta.focus();
     }, 0);
   });
+
+  /* "Email Ron" also copies Ron's address to the clipboard with a visible
+     confirmation, so it does something even when the desktop has no default mail
+     app. The mailto href is left intact, so anyone WITH a mail client still gets
+     a pre-filled compose window as well. */
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('.sms__email');
+    if(!a) return;
+    try {
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText('ron@cpl.vision');
+        if(!a.dataset.origLabel) a.dataset.origLabel = a.textContent;
+        a.textContent = 'Copied ron@cpl.vision ✓';
+        setTimeout(function(){ if(a.dataset.origLabel) a.textContent = a.dataset.origLabel; }, 2200);
+      }
+    } catch(err){}
+  });
 })();
 </script>
 </body>
