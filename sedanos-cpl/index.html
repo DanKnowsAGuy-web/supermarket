@@ -54,6 +54,17 @@
 
 .sms__email{ display:inline-block; margin-left:.7rem; color:inherit; opacity:.82; font-size:.82rem; text-decoration:underline; text-underline-offset:2px; }
 .sms__email:hover{ opacity:1; }
+
+/* team: always open (no accordion), larger portrait cards on the dark close section.
+   4:5 portrait, top-anchored so heads never chop (fixes Daniel's full-body shot;
+   Ron/John square headshots crop only at the sides, which reads clean). */
+.team-block{ margin-top: clamp(2rem,4vw,3rem); }
+.team-block__label{ font-family:var(--font-mono); font-size:.72rem; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:oklch(0.7 0.006 260); margin:0 0 clamp(1rem,2.2vw,1.5rem); }
+.close .team{ display:grid; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr)); gap:clamp(1.4rem,3vw,2.2rem); max-width:840px; }
+.close .person{ display:block; }
+.close .person img{ width:100%; height:auto; aspect-ratio:4/5; object-fit:cover; object-position:center top; border-radius:6px; margin-bottom:.9rem; }
+.close .person h3{ font-size:var(--step-1); }
+.close .person__role{ color:var(--amber); }
 </style>
 </head>
 <body>
@@ -620,16 +631,14 @@
           <a class="btn btn--sm js-sms-send" href="#" data-phone="+1XXXXXXXXXX">Send message</a> <a class="sms__email" href="mailto:ron@cpl.vision?subject=Energy%20savings%20across%20our%20stores&body=Hey%20Ron%2C%20I%20handle%20facilities%20for%20a%20grocery%20operation%20and%20I%27d%20like%20to%20see%20what%20real%20energy%20savings%20could%20look%20like%20across%20our%20stores%2C%20without%20the%20sales%20song%20and%20dance.%20What%20does%20it%20take%20to%20qualify%3F">Email Ron instead</a>
         </div>
       </div>
-      <details class="gate gate--dark">
-        <summary><span class="plus" aria-hidden="true">+</span>See the team</summary>
-        <div class="gate__body">
-          <div class="team">
-            <div class="person"><img src="../assets/img/ron-hansen.png" alt="Ron Hansen" loading="lazy"><div><h3>Ron Hansen</h3><p class="person__role">CEO &middot; CPL</p><p>Ron pairs a passion for empowering people with a track record of high-impact execution, turning bold ideas into thriving realities through visionary leadership, clear communication, and strategic relationship-building.</p></div></div>
-            <div class="person"><img src="../assets/img/jonathan-grinko.png" alt="Jonathan Grinko" loading="lazy"><div><h3>Jonathan Grinko</h3><p class="person__role">Director of Systems &amp; Business Development</p><p>Jonathan builds the internal systems behind sales, operations, and client delivery, including CRM workflows, automation, and documentation. His focus is simple: repeatable processes that protect quality, improve follow-through, and make growth sustainable.</p></div></div>
-            <div class="person"><img src="../assets/img/daniel.jpeg" alt="Daniel Gutierrez" loading="lazy"><div><h3>Daniel Gutierrez</h3><p class="person__role">Founder</p><p>19 years connecting people, capital, and opportunity across 14+ industries. Former director of FDA-registered clinical trials. Works fee-for-performance.</p></div></div>
-          </div>
+      <div class="team-block">
+        <p class="team-block__label">The team</p>
+        <div class="team">
+          <div class="person"><img src="../assets/img/ron-hansen.png" alt="Ron Hansen" loading="lazy"><div><h3>Ron Hansen</h3><p class="person__role">CEO &middot; CPL</p><p>Ron pairs a passion for empowering people with a track record of high-impact execution, turning bold ideas into thriving realities through visionary leadership, clear communication, and strategic relationship-building.</p></div></div>
+          <div class="person"><img src="../assets/img/jonathan-grinko.png" alt="Jonathan Grinko" loading="lazy"><div><h3>Jonathan Grinko</h3><p class="person__role">Director of Systems &amp; Business Development</p><p>Jonathan builds the internal systems behind sales, operations, and client delivery, including CRM workflows, automation, and documentation. His focus is simple: repeatable processes that protect quality, improve follow-through, and make growth sustainable.</p></div></div>
+          <div class="person"><img src="../assets/img/daniel.jpeg" alt="Daniel Gutierrez" loading="lazy"><div><h3>Daniel Gutierrez</h3><p class="person__role">Founder, Energy Plus</p><p>19 years connecting people, capital, and opportunity across 14+ industries. Former director of FDA-registered clinical trials. Works fee-for-performance.</p></div></div>
         </div>
-      </details>
+      </div>
     </div>
   </section>
 </main>
