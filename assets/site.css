@@ -427,7 +427,7 @@ html.reveal-on img.js-reveal {
 /* calculator */
 .calc { position: relative; margin-top: clamp(1.6rem, 3vw, 2.4rem); }
 .calc__loading { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-mono); font-size: 0.78rem; color: var(--faint); }
-.calc iframe { position: relative; display: block; width: 100%; min-height: 640px; height: 900px; border: 0; background: transparent; }
+.calc iframe { position: relative; display: block; width: 100%; min-height: 420px; height: 520px; border: 0; background: transparent; transition: height 380ms var(--ease); }
 
 /* ---------- disclosure gates: controls at a glance ---------- */
 details.gate { border-top: 1px solid var(--rule); margin-top: clamp(1.4rem, 3vw, 2rem); }
