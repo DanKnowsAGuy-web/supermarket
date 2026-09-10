@@ -767,27 +767,3 @@ dialog::backdrop { background: rgb(16 20 22 / 0.7); }
   .hero__media, .close__media { display: none; }
   .hero h1, .close h2, .hero__lede { color: black; }
 }
-
-/* ---------- the simple register on phones: html[data-register="simple"] ----------
-   The bold register is the default everywhere. Set data-register="simple" on <html>
-   (or open the page with ?register=simple) to see the phone with a cool white ground
-   in the three instrument moments instead of petrol. */
-@media (max-width: 1099px) {
-  html[data-register="simple"] {
-    --graphite: #f3f5f6; --graphite-2: #e9edf0; --graphite-rule: #d3d9dd;
-    --panel-ink: #101416; --panel-body: #3b4347; --panel-faint: #6b747a;
-    --panel-btn-bg: #174e58; --panel-btn-fg: #ffffff;
-    --amber: #b8830f;
-  }
-  html[data-register="simple"] .hero h1 em, html[data-register="simple"] .close h2 em { color: #174e58; }
-  html[data-register="simple"] .readout { color: #174e58; }
-  html[data-register="simple"] .hero, html[data-register="simple"] .close { border-bottom: 1px solid var(--rule); }
-  html[data-register="simple"] .close { border-top: 1px solid var(--rule); border-bottom: 0; }
-  html[data-register="simple"] .head.is-clear .head__mark img { filter: invert(1) hue-rotate(180deg); }
-  html[data-register="simple"] .hero .btn, html[data-register="simple"] .close .btn { color: #fff; }
-  html[data-register="simple"] .hero .sms .btn, html[data-register="simple"] .close .sms .btn { background: #174e58; color: #fff; }
-  html[data-register="simple"] .bill svg { filter: drop-shadow(0 18px 32px rgb(16 20 22 / 0.18)); }
-  html[data-register="simple"] .kit__img { box-shadow: none; border: 1px solid var(--rule); }
-  html[data-register="simple"] .hero__scrim { background: linear-gradient(to right, rgb(243 245 246 / 0.96) 0%, rgb(243 245 246 / 0.88) 55%, rgb(243 245 246 / 0.8) 100%); }
-  html[data-register="simple"] .close__media { display: none; }
-}
