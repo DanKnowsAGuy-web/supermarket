@@ -179,10 +179,15 @@
       let h = null;
       if (typeof e.data === "number") h = e.data;
       else if (e.data && typeof e.data === "object" && typeof e.data.height === "number") h = e.data.height;
-      if (h && h > 300 && h < 4000) {
+      if (h && h > 300 && h < 20000) {
       const cur = parseInt(calcFrame.style.height, 10) || 0;
       if (Math.abs(h - cur) > 2) calcFrame.style.height = h + "px"; /* only resize on a real change */
     }
+      /* the embedded calculator asks the page to scroll a step to the top of the screen */
+      if (e.data && typeof e.data === "object" && typeof e.data.scrollTo === "number") {
+        const y = calcFrame.getBoundingClientRect().top + window.scrollY + e.data.scrollTo - 72;
+        window.scrollTo({ top: Math.max(0, y), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      }
     });
   }
 
@@ -201,21 +206,21 @@
       ["23.6%", "NASA Jet Propulsion Lab", "Government · Pasadena, CA", "7-day before/after, Caltech / Emcor"],
       ["21.1% kWh", "Simon Property Group", "Retail, Jersey Gardens mall · Elizabeth, NJ", "IPMVP; $41,473/yr, 12-mo payback"],
       ["19.2% RTU", "Anheuser-Busch (Mitchell Distributing)", "Distribution · United States", "20-mo payback; 904% lifetime ROI"],
-      ["20–35%", "Trebor International", "Manufacturing · Windsor, ON", "P.E. licensed in 6 jurisdictions"],
-      ["21–32%", "Kenya program", "Lab + field · Kenya Bureau of Standards; LECOL Mombasa", "KEBS lab test vs BS EN 60335-1"],
-      ["27–30%", "Lebanon program", "2 sites · DALFA Beirut · HSZ Zgharta", "ENISCOPE data, witnessed and co-signed"],
+      ["20 to 35%", "Trebor International", "Manufacturing · Windsor, ON", "P.E. licensed in 6 jurisdictions"],
+      ["21 to 32%", "Kenya program", "Lab + field · Kenya Bureau of Standards; LECOL Mombasa", "KEBS lab test vs BS EN 60335-1"],
+      ["27 to 30%", "Lebanon program", "2 sites · DALFA Beirut · HSZ Zgharta", "ENISCOPE data, witnessed and co-signed"],
       ["47.6% ΔT", "Electrolux", "Lab / OEM · United States", "Tri-S ECM thermal report"],
       ["284% ROI", "Men's Wearhouse (Tailored Brands)", "Retail · United States", "Dual-RTU, 12.5-mo payback"],
       ["24%+ / yr", "McDonald's franchisee", "Quick-serve · United States", "Annual study"],
       ["20% avg", "Bangladesh Ministry of Power", "Government pilot · Dhaka", "Official certification issued"],
       ["20% avg", "AT&T Mobility / SDG&E", "Telecom, 9 cell sites · San Diego, CA", "HOBO loggers; utility-engineer co-authored"],
-      ["19.5–21.6%", "Verizon Network Services", "Telecom · Dallas, TX", "P.E.-authored; approved for deployment"],
+      ["19.5 to 21.6%", "Verizon Network Services", "Telecom · Dallas, TX", "P.E.-authored; approved for deployment"],
       ["~21%", "DOE FEMP demonstration", "Government, gymnasium RTUs · United States", "U.S. DOE / ORNL controlled study"],
       ["22%", "Bashas' Supermarket", "Grocery · Gold Canyon, AZ", "Grocery vertical study"],
       ["19.4% / yr", "Domino's Store 6711", "Quick-serve · United States", "2-year study"],
-      ["12–27%", "UAE program", "14 institutions · Sheraton Jumeirah · Sharjah FZ · Jotun · Flora Grand", "14-institution deployment"],
-      ["15–39%", "Multi-country program", "South Africa · Pakistan · Indonesia · Puerto Rico", "Field studies per country"],
-      ["15–21%", "Bangladesh enterprise", "56 units · GraphicPeople (WPP) · BEXIMCO · IDLC Finance", "Enterprise deployment"],
+      ["12 to 27%", "UAE program", "14 institutions · Sheraton Jumeirah · Sharjah FZ · Jotun · Flora Grand", "14-institution deployment"],
+      ["15 to 39%", "Multi-country program", "South Africa · Pakistan · Indonesia · Puerto Rico", "Field studies per country"],
+      ["15 to 21%", "Bangladesh enterprise", "56 units · GraphicPeople (WPP) · BEXIMCO · IDLC Finance", "Enterprise deployment"],
       ["15% eff.", "DHL (ammonia refrigeration)", "Logistics · United States", "Compressor study, 13.8-mo payback"],
       ["200 sites", "Airtel Bangladesh", "Telecom, 200 BTS sites · Nationwide", "3-month pilot, no performance issues"],
       ["5-mo payback", "Italgas Toscana", "Utility, heat pump · Italy", "Field efficiency trial"],
@@ -280,7 +285,7 @@
       ["12.5% kWh", "RPM Pizza (Domino's)", "Quick-serve, 170+ stores · MS · LA · AL · IN · MI", "Normalized; >$100k/yr projected"],
       ["12.5% kWh", "Wheeling University", "Education · Wheeling, WV", "Engineering capstone study"],
       ["12% kWh", "Pinnacle Center 4 (J&J HQ)", "Office · Rogers, AR", "Occupancy-adjusted baseline"],
-      ["9–19%", "The Massey Building", "Office (historic) · Birmingham, AL", "Per-floor metering"],
+      ["9 to 19%", "The Massey Building", "Office (historic) · Birmingham, AL", "Per-floor metering"],
       ["9% kWh", "Popeyes", "Quick-serve, 25 locations · GA · AL · LA · MS · TN", "ABRAXAS"],
       ["9.7% delta", "Krystal", "Quick-serve · Georgia", "Noesis, vs. control store"],
       ["8.59% kW", "Las Vegas Hotel & Casino", "Hospitality · Las Vegas, NV", "Independent panel metering"],
