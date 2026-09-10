@@ -1,6 +1,6 @@
-/* Field Report type system: one load-bearing family + one instrument voice.
-   Archivo variable carries body (normal width) and display (expanded, heavy);
-   Spline Sans Mono is reserved for metered values, captions, and footnotes. */
+/* Energy+ type system: Archivo writes, Geist Mono counts.
+   Archivo variable carries body (normal width) and display (wdth 112, 700);
+   Geist Mono variable is reserved for metered values, figures, and footnote markers. */
 @font-face {
   font-family: "Archivo";
   font-style: normal;
@@ -10,9 +10,9 @@
   src: url("archivo-var.woff2") format("woff2");
 }
 @font-face {
-  font-family: "Spline Sans Mono";
+  font-family: "Geist Mono";
   font-style: normal;
-  font-weight: 300 700;
+  font-weight: 100 900;
   font-display: swap;
-  src: url("spline-sans-mono-var.woff2") format("woff2");
+  src: url("GeistMono-400.woff2") format("woff2");
 }
