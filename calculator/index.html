@@ -1028,7 +1028,7 @@ function copyLink(){
 }
 /* ---------------- item 12: booking ---------------- */
 function bookUrl(){
-  var r=compute();if(!r)return "https://cal.com/dan-knows-a-gut/15min";
+  var r=compute();if(!r)return "https://book.slashyourenergycost.com/?f=supermarket";
   var notes=["Energy Plus estimator submission",
     "Facility: "+T().facNames[st.fac.k],"State: "+st.region,
     "Spend/facility: "+fmt(st.spendM)+"/mo ("+fmt(r.spend)+"/yr)",
@@ -1036,7 +1036,7 @@ function bookUrl(){
     "Est. annual range/facility: "+RNG(r.floor,r.ceil)+(r.capped?" (ceiling capped)":""),
     "Facilities: "+T().countLbls[st.countKey],
     "Deep link: "+location.origin+location.pathname+"?"+serialize().toString()].join("\n");
-  return "https://cal.com/dan-knows-a-gut/15min?notes="+encodeURIComponent(notes);
+  return "https://book.slashyourenergycost.com/?f=supermarket";
 }
 function updateBookLink(){$("book-link").href=bookUrl();track("book_view",{});}
 /* ---------------- boot ---------------- */
